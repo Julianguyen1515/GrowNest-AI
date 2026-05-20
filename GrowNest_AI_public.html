@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🌿 GrowNest AI – Trợ lý sức khỏe gia đình</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f0fdf4;color:#1e293b;min-height:100vh}
+
+/* ══ ONBOARDING ══ */
+#onboarding{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#ecfdf5 0%,#e0f2fe 100%)}
+.ob-card{background:#fff;border-radius:28px;padding:36px 32px;width:100%;max-width:520px;box-shadow:0 8px 40px rgba(16,185,129,.12)}
+.ob-logo{text-align:center;margin-bottom:24px}
+.ob-logo .icon{font-size:56px;margin-bottom:8px}
+.ob-logo h1{font-size:26px;font-weight:800;color:#059669}
+.ob-logo p{font-size:14px;color:#64748b;margin-top:4px}
+.ob-title{font-size:19px;font-weight:800;margin-bottom:6px;color:#1e293b}
+.ob-sub{font-size:13.5px;color:#64748b;margin-bottom:24px}
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:28px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:.3s}
+.dot.active{background:#10b981;width:24px;border-radius:4px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:2px solid #e2e8f0;border-radius:12px;font-size:14px;outline:none;transition:.2s;background:#fff;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#10b981}
+.field textarea{resize:vertical;min-height:72px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tag-input-wrap{display:flex;gap:8px;margin-bottom:8px}
+.tag-input-wrap input{flex:1;padding:9px 12px;border:2px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none}
+.tag-input-wrap input:focus{border-color:#10b981}
+.tag-add-btn{padding:9px 14px;background:#10b981;color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:18px;line-height:1}
+.tags-display{display:flex;flex-wrap:wrap;gap:6px;min-height:28px}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12.5px;font-weight:600}
+.tag.like{background:#dcfce7;color:#166534}
+.tag.dislike{background:#fef2f2;color:#991b1b}
+.tag.goal{background:#e0f2fe;color:#0369a1}
+.tag.health{background:#fff7ed;color:#9a3412}
+.tag-x{cursor:pointer;font-size:14px;opacity:.7}
+.tag-x:hover{opacity:1}
+.ob-btn{width:100%;padding:14px;background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;margin-top:8px}
+.ob-btn:hover{opacity:.92;transform:translateY(-1px)}
+.ob-btn-outline{width:100%;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+.ob-btn-outline:hover{background:#e2e8f0}
+.member-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.member-row{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border-radius:14px;padding:12px 16px}
+.member-row-info{display:flex;align-items:center;gap:12px}
+.member-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;flex-shrink:0}
+.member-row-name{font-weight:700;font-size:14px}
+.member-row-meta{font-size:12px;color:#64748b}
+.del-btn{background:#fef2f2;border:none;color:#ef4444;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:16px}
+.add-another{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:2px dashed #bbf7d0;border-radius:14px;cursor:pointer;color:#059669;font-weight:700;font-size:14px;transition:.2s}
+.add-another:hover{background:#f0fdf4}
+
+/* ══ MAIN APP ══ */
+#mainApp{display:none}
+.app-header{background:linear-gradient(135deg,#10b981 0%,#059669 40%,#0284c7 100%);padding:18px 20px 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(16,185,129,.3)}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.logo{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.header-title h1{color:#fff;font-size:18px;font-weight:800}
+.header-title p{color:rgba(255,255,255,.75);font-size:11.5px}
+.tab-bar{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:9px 13px;border:none;background:transparent;color:rgba(255,255,255,.7);font-size:12.5px;font-weight:600;cursor:pointer;border-radius:10px 10px 0 0;transition:.2s;white-space:nowrap}
+.tab-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.tab-btn.active{background:#fff;color:#059669}
+.content{padding:18px;max-width:900px;margin:0 auto}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* ══ CARDS ══ */
+.card{background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-icon{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#10b981,#0284c7);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-header h2{font-size:17px;font-weight:800}
+.section-header p{font-size:12.5px;color:#64748b}
+
+/* ══ HERO ══ */
+.hero{background:linear-gradient(135deg,#10b981,#0284c7);border-radius:22px;padding:24px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden}
+.hero::after{content:'🌿';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:60px;opacity:.15}
+.hero h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.hero p{font-size:13px;opacity:.9;line-height:1.6}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.stat-box{background:rgba(255,255,255,.2);border-radius:12px;padding:10px;text-align:center}
+.stat-box .num{font-size:20px;font-weight:800}
+.stat-box .lbl{font-size:11px;opacity:.85;margin-top:2px}
+
+/* ══ MEMBER CARDS ══ */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.member-card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);border-top:4px solid #10b981}
+.mc-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#10b981,#0284c7);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0}
+.mc-name{font-weight:700;font-size:15px}
+.mc-meta{font-size:12px;color:#64748b}
+.mc-badge{display:inline-block;background:#f0fdf4;color:#059669;border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:600;margin-left:6px}
+.mc-section{margin-bottom:10px}
+.mc-label{font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.mc-goal-box{background:#f0fdf4;border-radius:10px;padding:10px 12px;font-size:13px;color:#166534}
+.mc-health-box{background:#fff7ed;border-radius:10px;padding:10px 12px;font-size:13px;color:#9a3412;border-left:3px solid #f97316}
+.mc-tags{display:flex;flex-wrap:wrap;gap:5px}
+.edit-member-btn{width:100%;margin-top:12px;padding:8px;background:#f8fafc;border:none;border-radius:10px;color:#64748b;font-size:13px;font-weight:600;cursor:pointer}
+.edit-member-btn:hover{background:#e2e8f0}
+
+/* ══ MENU ══ */
+.mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+@media(min-width:560px){.mode-grid{grid-template-columns:repeat(4,1fr)}}
+.mode-btn{padding:12px 8px;border:2px solid #e2e8f0;border-radius:13px;background:#fff;cursor:pointer;text-align:center;font-size:12.5px;font-weight:600;color:#475569;transition:.2s}
+.mode-btn:hover{border-color:#10b981;color:#10b981}
+.mode-btn.active{border-color:#10b981;background:#f0fdf4;color:#059669}
+.mode-btn .mode-icon{font-size:20px;display:block;margin-bottom:4px}
+.day-card{background:#f8fafc;border-radius:16px;padding:14px;margin-bottom:10px}
+.day-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.day-header h3{font-weight:700;font-size:14px}
+.day-badge{background:#e0f2fe;color:#0369a1;border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:600}
+.day-body{display:none;margin-top:12px}
+.day-body.open{display:block}
+.meal-title{font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px;margin-bottom:6px}
+.meal-title.bf{background:#fef9c3;color:#854d0e}
+.meal-title.lunch{background:#dcfce7;color:#166534}
+.meal-title.dinner{background:#e0f2fe;color:#075985}
+.meal-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:5px;margin-bottom:10px}
+.meal-item{background:#fff;border-radius:9px;padding:7px 9px 7px 9px;font-size:12.5px;color:#374151;border:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:default}
+.meal-item.fav{background:#fff0f5;border-color:#fda4af;color:#9f1239}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:15px;line-height:1;flex-shrink:0;padding:0;opacity:.4;transition:.15s}
+.fav-btn:hover{opacity:1;transform:scale(1.2)}
+.fav-btn.on{opacity:1}
+.fav-panel{background:#fff0f5;border-radius:14px;padding:14px 16px;margin-bottom:14px;border:1.5px solid #fda4af;display:none}
+.fav-panel.show{display:block}
+.fav-panel-title{font-size:13.5px;font-weight:700;color:#9f1239;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.fav-tags{display:flex;flex-wrap:wrap;gap:7px}
+.fav-tag{background:#fff;border:1.5px solid #fda4af;border-radius:20px;padding:4px 12px;font-size:12.5px;color:#be123c;font-weight:600;display:flex;align-items:center;gap:5px}
+.next-week-btn{width:100%;padding:12px;background:linear-gradient(135deg,#be123c,#9333ea);color:#fff;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;transition:.2s}
+.next-week-btn:hover{opacity:.9;transform:translateY(-1px)}
+.fav-count-badge{display:inline-flex;align-items:center;justify-content:center;background:#be123c;color:#fff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:6px}
+.shopping-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:7px;margin-top:10px}
+.shop-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:7px 10px;font-size:12.5px;color:#166534}
+
+/* ══ NUTRITION ══ */
+.nutrition-table{width:100%;border-collapse:collapse;font-size:13px}
+.nutrition-table th{background:#f0fdf4;color:#166534;padding:9px 11px;text-align:left;font-weight:700;border-bottom:2px solid #bbf7d0}
+.nutrition-table td{padding:8px 11px;border-bottom:1px solid #f1f5f9}
+.nutrition-table tr:hover td{background:#f8fafc}
+.tip-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border-left:4px solid #10b981;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.tip-icon{font-size:22px;margin-bottom:6px}
+.tip-title{font-weight:700;margin-bottom:5px;font-size:14px}
+.tip-desc{font-size:13px;color:#475569;line-height:1.6}
+.warning-item{display:flex;gap:10px;padding:9px 12px;background:#fff7ed;border-radius:10px;margin-bottom:7px;font-size:13px;color:#7c2d12}
+
+/* ══ SLEEP & EXERCISE ══ */
+.sleep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px}
+.sleep-card{background:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 1px 6px rgba(0,0,0,.05);display:flex;align-items:center;gap:10px}
+.sleep-hours{font-size:20px;font-weight:800;color:#0284c7;min-width:48px}
+.sleep-group{font-size:13px;font-weight:600;color:#1e293b}
+.sleep-label{font-size:11.5px;color:#64748b}
+.subtab-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.subtab-btn{padding:7px 14px;border:2px solid #e2e8f0;border-radius:20px;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;color:#64748b;transition:.2s}
+.subtab-btn.active{background:#10b981;border-color:#10b981;color:#fff}
+.motor-panel{display:none}.motor-panel.active{display:block}
+.motor-card{background:#fff;border-radius:13px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.age-badge{background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border-radius:10px;padding:5px 10px;font-size:11.5px;font-weight:700;min-width:68px;text-align:center;height:fit-content;flex-shrink:0}
+.motor-skills{font-size:13px;color:#374151;line-height:1.6}
+.exercise-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:9px;display:flex;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.ex-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ex-name{font-weight:700;font-size:13.5px;margin-bottom:3px}
+.ex-benefit{font-size:12px;color:#10b981;margin-bottom:3px}
+.ex-note{font-size:11.5px;color:#64748b}
+
+/* ══ BMR ══ */
+.bmr-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.bmr-form{grid-template-columns:1fr}}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none;background:#fff;transition:.2s}
+.form-group input:focus,.form-group select:focus{border-color:#10b981}
+.calc-btn{background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+.calc-btn:hover{opacity:.9}
+.bmr-result{background:linear-gradient(135deg,#f0fdf4,#e0f2fe);border-radius:14px;padding:18px;margin-top:14px;display:none}
+.bmr-result.show{display:block}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.result-box{background:#fff;border-radius:11px;padding:13px;text-align:center}
+.result-box .val{font-size:22px;font-weight:800;color:#059669}
+.result-box .lbl{font-size:12px;color:#64748b;margin-top:3px}
+
+/* ══ TRACKING ══ */
+.tracking-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.track-card{background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.track-icon{font-size:26px;margin-bottom:6px}
+.track-val{font-size:24px;font-weight:800;color:#059669}
+.track-label{font-size:11.5px;color:#64748b;margin-top:3px}
+.progress-item{background:#fff;border-radius:13px;padding:14px;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:9px;font-size:13.5px;font-weight:600}
+.progress-bar{height:9px;background:#e2e8f0;border-radius:9px;overflow:hidden}
+.progress-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#10b981,#0284c7)}
+
+/* ══ CHAT ══ */
+.chat-area{background:#f8fafc;border-radius:14px;padding:14px;min-height:220px;max-height:320px;overflow-y:auto;margin-bottom:12px}
+.msg{margin-bottom:10px;display:flex;gap:8px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-bubble{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.6}
+.msg.ai .msg-bubble{background:#fff;color:#1e293b;border-radius:4px 14px 14px 14px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.msg.user .msg-bubble{background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border-radius:14px 4px 14px 14px}
+.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:#e0f2fe}
+.msg.user .msg-avatar{background:linear-gradient(135deg,#10b981,#0284c7);color:#fff}
+.chat-input-row{display:flex;gap:8px}
+.chat-input{flex:1;padding:11px 14px;border:2px solid #e2e8f0;border-radius:13px;font-size:13.5px;outline:none;transition:.2s}
+.chat-input:focus{border-color:#10b981}
+.send-btn{background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border:none;border-radius:13px;padding:11px 16px;font-size:18px;cursor:pointer}
+.quick-btns{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.quick-btn{padding:6px 13px;border:1.5px solid #bbf7d0;border-radius:20px;background:#f0fdf4;color:#059669;font-size:12px;cursor:pointer;font-weight:600}
+.quick-btn:hover{background:#dcfce7}
+
+/* ══ ROADMAP ══ */
+.roadmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.roadmap-card{border-radius:14px;padding:16px;color:#fff}
+.roadmap-card.p1{background:linear-gradient(135deg,#10b981,#059669)}
+.roadmap-card.p2{background:linear-gradient(135deg,#0284c7,#7c3aed)}
+.roadmap-card.p3{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.roadmap-card h4{font-size:13px;font-weight:800;margin-bottom:8px;opacity:.9}
+.roadmap-item{font-size:12.5px;margin-bottom:5px;padding-left:13px;position:relative;opacity:.9}
+.roadmap-item::before{content:'✓';position:absolute;left:0;font-weight:700}
+
+/* ══ MODAL ══ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:22px;padding:26px;width:100%;max-width:440px;max-height:92vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:18px}
+.modal-btns{display:flex;gap:10px;margin-top:14px}
+.btn-primary{flex:1;background:linear-gradient(135deg,#10b981,#0284c7);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-secondary{flex:1;background:#f1f5f9;color:#475569;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+
+/* ══ NUTRITION ENGINE ══ */
+.day-nutrition{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding:9px 12px;background:#f0fdf4;border-radius:10px}
+.nut-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.nut-kcal{background:#dcfce7;color:#166534}
+.nut-prot{background:#e0f2fe;color:#0369a1}
+.nut-warn{background:#fff7ed;color:#9a3412}
+.regen-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:linear-gradient(135deg,#059669,#0284c7);color:#fff;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:.2s}
+.regen-btn:hover{opacity:.9;transform:translateY(-1px)}
+.smart-note{background:#f0fdf4;border-radius:11px;padding:11px 14px;font-size:12.5px;color:#166534;border-left:3px solid #10b981;margin-bottom:12px;line-height:1.6;display:none}
+.smart-note.show{display:block}
+.tdee-chip{display:inline-block;background:#e0f2fe;color:#0369a1;border-radius:8px;padding:2px 8px;font-size:11.5px;font-weight:700;margin-top:4px}
+.bmi-chip{display:inline-block;border-radius:8px;padding:2px 8px;font-size:11.5px;font-weight:700;margin-top:4px;margin-left:5px}
+.conflict-badge{display:inline-flex;align-items:center;gap:3px;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;position:relative}
+.conflict-tooltip{display:none;position:absolute;top:100%;left:0;z-index:50;background:#1e293b;color:#f8fafc;border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.5;width:220px;box-shadow:0 4px 16px rgba(0,0,0,.25);margin-top:4px;font-weight:400}
+.conflict-badge:hover .conflict-tooltip{display:block}
+
+/* ══ SHOPPING LIST DYNAMIC ══ */
+.shop-category{margin-bottom:16px}
+.shop-cat-title{font-size:12px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-bottom:5px;border-bottom:1.5px solid #bbf7d0}
+.shop-check-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:6px}
+.shop-check-item{display:flex;align-items:center;gap:7px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:7px 10px;font-size:12.5px;color:#166534;cursor:pointer;transition:.15s;user-select:none}
+.shop-check-item:hover{background:#dcfce7}
+.shop-check-item.checked{background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8;text-decoration:line-through}
+.shop-check-item input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:#10b981;flex-shrink:0}
+.shop-refresh-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:.2s}
+.shop-refresh-btn:hover{opacity:.9}
+.shop-stats{background:#e0f2fe;border-radius:10px;padding:8px 12px;font-size:12.5px;color:#0369a1;margin-bottom:12px}
+.reset-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:#fef2f2;color:#ef4444;border:2px solid #fecaca;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer;margin-top:10px;transition:.2s}
+.reset-btn:hover{background:#fee2e2}
+.save-indicator{position:fixed;bottom:18px;right:18px;background:#059669;color:#fff;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;z-index:999;opacity:0;transform:translateY(6px);transition:.3s;pointer-events:none}
+.save-indicator.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     ONBOARDING
+════════════════════════════════════════ -->
+<!-- Save indicator -->
+<div class="save-indicator" id="saveIndicator">💾 Đã lưu</div>
+
+<div id="onboarding">
+<div class="ob-card" id="obCard">
+
+  <!-- BƯỚC 0: Chào mừng -->
+  <div id="step0">
+    <div class="ob-logo">
+      <div class="icon">🌿</div>
+      <h1>GrowNest AI</h1>
+      <p>Trợ lý sức khỏe &amp; phát triển toàn diện cho gia đình</p>
+    </div>
+    <div style="background:#f0fdf4;border-radius:16px;padding:18px;margin-bottom:20px">
+      <p style="font-size:14px;color:#166534;line-height:1.7">
+        👋 Chào mừng bạn!<br><br>
+        Chúng ta sẽ tạo <strong>hồ sơ gia đình</strong> của bạn trong 2 phút. GrowNest AI sẽ dùng thông tin này để lên thực đơn, theo dõi sức khỏe và đưa ra gợi ý phù hợp cho <strong>từng thành viên</strong>.
+      </p>
+    </div>
+    <button class="ob-btn" onclick="goStep(1)">Bắt đầu thiết lập gia đình →</button>
+  </div>
+
+  <!-- BƯỚC 1: Danh sách thành viên -->
+  <div id="step1" style="display:none">
+    <div class="step-dots"><div class="dot active"></div><div class="dot"></div></div>
+    <div class="ob-title">👨‍👩‍👧‍👦 Thành viên gia đình</div>
+    <div class="ob-sub">Thêm tất cả những người bạn muốn theo dõi sức khỏe.</div>
+    <div class="member-list" id="memberList"></div>
+    <div class="add-another" onclick="openAddMember()">+ Thêm thành viên</div>
+    <button class="ob-btn" style="margin-top:16px" onclick="finishSetup()" id="startBtn" disabled>Vào ứng dụng →</button>
+    <p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:10px">Cần ít nhất 1 thành viên để bắt đầu</p>
+  </div>
+
+  <!-- BƯỚC 2: Form nhập thành viên -->
+  <div id="step2" style="display:none">
+    <div class="step-dots"><div class="dot"></div><div class="dot active"></div></div>
+    <div class="ob-title" id="formTitle">➕ Thêm thành viên</div>
+    <div class="ob-sub">Điền càng đầy đủ, gợi ý của AI càng chính xác.</div>
+
+    <div class="field-row">
+      <div class="field"><label>Tên *</label><input id="fName" placeholder="VD: Mẹ Lan"/></div>
+      <div class="field"><label>Tuổi *</label><input id="fAge" type="number" placeholder="VD: 40" min="1" max="120"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Giới tính *</label>
+        <select id="fGender">
+          <option value="">— Chọn —</option>
+          <option value="female">Nữ</option>
+          <option value="male">Nam</option>
+        </select>
+      </div>
+      <div class="field"><label>Vai trò trong nhà</label>
+        <select id="fRole">
+          <option>Bố</option><option>Mẹ</option><option>Ông</option><option>Bà</option>
+          <option>Anh/Chị</option><option>Em</option><option>Con</option><option>Khác</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Cân nặng (kg)</label><input id="fWeight" type="number" placeholder="VD: 55"/></div>
+      <div class="field"><label>Chiều cao (cm)</label><input id="fHeight" type="number" placeholder="VD: 158"/></div>
+    </div>
+
+    <div class="field">
+      <label>🏥 Tình trạng sức khỏe / bệnh lý</label>
+      <div class="tag-input-wrap">
+        <input id="fHealthInput" placeholder="VD: Tiểu đường, dị ứng hải sản..." onkeypress="if(event.key==='Enter'){addTag('health');event.preventDefault()}"/>
+        <button class="tag-add-btn" onclick="addTag('health')">+</button>
+      </div>
+      <div class="tags-display" id="fHealthTags"></div>
+      <p style="font-size:11.5px;color:#94a3b8;margin-top:5px">Để trống nếu không có bệnh lý đặc biệt</p>
+    </div>
+
+    <div class="field">
+      <label>😋 Món ăn yêu thích</label>
+      <div class="tag-input-wrap">
+        <input id="fLikeInput" placeholder="VD: Phở, gà luộc, cá hồi..." onkeypress="if(event.key==='Enter'){addTag('like');event.preventDefault()}"/>
+        <button class="tag-add-btn" onclick="addTag('like')">+</button>
+      </div>
+      <div class="tags-display" id="fLikeTags"></div>
+    </div>
+
+    <div class="field">
+      <label>🙅 Món không thích / dị ứng</label>
+      <div class="tag-input-wrap">
+        <input id="fDislikeInput" placeholder="VD: Cà tím, mướp, đồ tanh..." onkeypress="if(event.key==='Enter'){addTag('dislike');event.preventDefault()}"/>
+        <button class="tag-add-btn" onclick="addTag('dislike')">+</button>
+      </div>
+      <div class="tags-display" id="fDislikeTags"></div>
+    </div>
+
+    <div class="field">
+      <label>🎯 Mục tiêu sức khỏe tương lai</label>
+      <div class="tag-input-wrap">
+        <input id="fGoalInput" placeholder="VD: Tăng chiều cao 5cm, giảm 3kg, khỏi viêm dạ dày..." onkeypress="if(event.key==='Enter'){addTag('goal');event.preventDefault()}"/>
+        <button class="tag-add-btn" onclick="addTag('goal')">+</button>
+      </div>
+      <div class="tags-display" id="fGoalTags"></div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>Cân nặng mục tiêu (kg)</label><input id="fTargetWeight" type="number" placeholder="VD: 52"/></div>
+      <div class="field"><label>Chiều cao mục tiêu (cm)</label><input id="fTargetHeight" type="number" placeholder="VD: 165"/></div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="cancelAddMember()">← Quay lại</button>
+      <button class="btn-primary" onclick="saveMember()">Lưu thành viên ✓</button>
+    </div>
+  </div>
+
+</div>
+</div><!-- end onboarding -->
+
+<!-- ════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════ -->
+<div id="mainApp">
+  <div class="app-header">
+    <div class="header-top">
+      <div class="logo">🌿</div>
+      <div class="header-title">
+        <h1>GrowNest AI</h1>
+        <p id="headerSub">Trợ lý sức khỏe gia đình</p>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="showTab('home',this)">🏠 Trang chủ</button>
+      <button class="tab-btn" onclick="showTab('family',this)">👨‍👩‍👧‍👦 Gia đình</button>
+      <button class="tab-btn" onclick="showTab('menu',this)">🍽️ Thực đơn</button>
+      <button class="tab-btn" onclick="showTab('sleep',this)">🌙 Ngủ & Vận động</button>
+      <button class="tab-btn" onclick="showTab('nutrition',this)">🥗 Dinh dưỡng</button>
+      <button class="tab-btn" onclick="showTab('tracking',this)">📊 Theo dõi</button>
+      <button class="tab-btn" onclick="showTab('ai',this)">✨ AI Coach</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- TAB TRANG CHỦ -->
+  <div class="tab-panel active" id="tab-home">
+    <div class="hero">
+      <h2 id="heroGreet">Xin chào gia đình! 👋</h2>
+      <p id="heroDesc">AI đang theo dõi sức khỏe & phát triển cho các thành viên của bạn.</p>
+      <div class="hero-stats">
+        <div class="stat-box"><div class="num" id="statMembers">0</div><div class="lbl">Thành viên</div></div>
+        <div class="stat-box"><div class="num">7</div><div class="lbl">Ngày thực đơn</div></div>
+        <div class="stat-box"><div class="num">8</div><div class="lbl">Bài tập chiều cao</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💡 Gợi ý hôm nay từ AI</div>
+      <div id="homeTips"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🗺️ Lộ trình GrowNest AI</div>
+      <div class="roadmap">
+        <div class="roadmap-card p1"><h4>Giai đoạn 1 – Hiện tại</h4><div class="roadmap-item">Thực đơn 7 ngày thông minh</div><div class="roadmap-item">BMR/TDEE Calculator</div><div class="roadmap-item">Thư viện dinh dưỡng chuyên gia</div><div class="roadmap-item">Chuẩn giấc ngủ & vận động</div></div>
+        <div class="roadmap-card p2"><h4>Giai đoạn 2 – Sắp ra mắt</h4><div class="roadmap-item">AI thực sự (kết nối GPT)</div><div class="roadmap-item">Đồng bộ dữ liệu đám mây</div><div class="roadmap-item">Theo dõi chiều cao theo tuần</div><div class="roadmap-item">Nhắc nhở tự động</div></div>
+        <div class="roadmap-card p3"><h4>Giai đoạn 3 – Tương lai</h4><div class="roadmap-item">Gamification gia đình</div><div class="roadmap-item">Kết nối bác sĩ dinh dưỡng</div><div class="roadmap-item">Wearable tracking</div><div class="roadmap-item">AI cá nhân hoá sâu</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB GIA ĐÌNH -->
+  <div class="tab-panel" id="tab-family">
+    <div class="section-header">
+      <div class="section-icon">👨‍👩‍👧‍👦</div>
+      <div><h2>Hồ sơ gia đình</h2><p>Quản lý thông tin từng thành viên</p></div>
+    </div>
+    <button class="ob-btn" style="margin-bottom:16px;border-radius:14px;padding:12px" onclick="openAddMemberApp()">+ Thêm thành viên mới</button>
+    <div class="members-grid" id="membersGrid"></div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0">
+      <p style="font-size:12px;color:#94a3b8;margin-bottom:8px;text-align:center">⚠️ Dữ liệu được lưu tự động trong trình duyệt này</p>
+      <button class="reset-btn" onclick="resetAllData()">🗑 Xoá toàn bộ dữ liệu & bắt đầu lại</button>
+    </div>
+  </div>
+
+  <!-- TAB THỰC ĐƠN -->
+  <div class="tab-panel" id="tab-menu">
+    <div class="section-header">
+      <div class="section-icon">🍽️</div>
+      <div><h2>Thực đơn 7 ngày</h2><p>Chọn phong cách phù hợp gia đình</p></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 Phong cách thực đơn</div>
+      <div class="mode-grid">
+        <div class="mode-btn active" onclick="setMode('mixed',this)"><span class="mode-icon">🍱</span>Kết hợp</div>
+        <div class="mode-btn" onclick="setMode('traditional',this)"><span class="mode-icon">🥢</span>Truyền thống</div>
+        <div class="mode-btn" onclick="setMode('modern',this)"><span class="mode-icon">🥗</span>Healthy</div>
+        <div class="mode-btn" onclick="setMode('saving',this)"><span class="mode-icon">💰</span>Tiết kiệm</div>
+        <div class="mode-btn" id="smartModeBtn" onclick="setMode('smart',this)" style="grid-column:span 2;border-color:#059669"><span class="mode-icon">🧠</span>Thông minh — tính theo gia đình</div>
+      </div>
+      <div id="aiMenuTip" style="background:#f0fdf4;border-radius:11px;padding:11px 14px;font-size:13px;color:#166534;border-left:3px solid #10b981">
+        💬 <strong>AI:</strong> Tuần này kết hợp món Việt truyền thống ngày thường và đổi món hiện đại cuối tuần.
+      </div>
+      <!-- Smart mode controls -->
+      <div class="smart-note" id="smartNote"></div>
+      <button class="regen-btn" id="regenBtn" onclick="regenSmartMenu()" style="display:none">🔄 Tạo lại thực đơn thông minh</button>
+      <div id="healthTips"></div>
+    </div>
+    <!-- Panel món yêu thích -->
+    <div class="fav-panel" id="favPanel">
+      <div class="fav-panel-title">
+        <span>❤️ Món yêu thích của gia đình <span class="fav-count-badge" id="favCount">0</span></span>
+        <span style="font-size:11.5px;color:#be123c;font-weight:500">Tick ❤️ ở từng món để lưu</span>
+      </div>
+      <div class="fav-tags" id="favTagList"></div>
+      <button class="next-week-btn" onclick="generateNextWeek()">✨ Tạo thực đơn tuần sau — ưu tiên món yêu thích</button>
+    </div>
+
+    <div id="menuDays"></div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:13px;padding:11px 15px;font-size:12px;color:#78350f;line-height:1.6;margin-bottom:14px">
+      ⚠️ <strong>Lưu ý:</strong> Thực đơn và khung dinh dưỡng do GrowNest AI gợi ý mang tính chất <strong>tham khảo</strong> dựa trên hướng dẫn sức khỏe chuẩn. Người có bệnh lý nền phức tạp hoặc đang điều trị vui lòng <strong>tham khảo ý kiến bác sĩ chuyên khoa</strong> trước khi áp dụng nghiêm ngặt.
+    </div>
+    <div class="card">
+      <div class="card-title">🛒 Danh sách đi chợ</div>
+      <button class="shop-refresh-btn" onclick="refreshShoppingList()">🔄 Tổng hợp nguyên liệu từ thực đơn 7 ngày</button>
+      <div class="shop-stats" id="shopStats">Nhấn nút trên để tự động tổng hợp từ thực đơn đang hiển thị</div>
+      <div id="shoppingListDynamic"></div>
+    </div>
+  </div>
+
+  <!-- TAB NGỦ & VẬN ĐỘNG -->
+  <div class="tab-panel" id="tab-sleep">
+    <div class="section-header"><div class="section-icon">🌙</div><div><h2>Ngủ & Vận động</h2><p>Chuẩn WHO/NSF và bài tập phát triển chiều cao</p></div></div>
+    <div class="card">
+      <div class="card-title">😴 Chuẩn giấc ngủ theo độ tuổi</div>
+      <div class="sleep-grid" id="sleepGrid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💪 Mốc phát triển vận động (5–18 tuổi)</div>
+      <div class="subtab-bar">
+        <button class="subtab-btn active" onclick="showMotor('gross',this)">🏃 Vận động thô</button>
+        <button class="subtab-btn" onclick="showMotor('fine',this)">✏️ Vận động tinh</button>
+        <button class="subtab-btn" onclick="showMotor('cognitive',this)">🧠 Nhận thức</button>
+      </div>
+      <div class="motor-panel active" id="motor-gross">
+        <div class="motor-card"><div class="age-badge">5–6 tuổi</div><div class="motor-skills">Nhảy lò cò, bắt bóng nảy, đi nối gót tiến/lùi, đứng 1 chân 10 giây, đi xe đạp 3 bánh.</div></div>
+        <div class="motor-card"><div class="age-badge">7–8 tuổi</div><div class="motor-skills">Kiểm soát chuyển động tốt hơn, bắt được bóng nảy, bắt đầu đi xe đạp 2 bánh.</div></div>
+        <div class="motor-card"><div class="age-badge">9–10 tuổi</div><div class="motor-skills">Thực hiện cử động phức tạp, phối hợp nhịp nhàng kỹ năng bơi lội hoặc chơi nhạc cụ.</div></div>
+        <div class="motor-card"><div class="age-badge">11–12 tuổi</div><div class="motor-skills">Cải thiện sức bền đáng kể, phối hợp nhiều kỹ năng để chơi thể thao đối kháng.</div></div>
+        <div class="motor-card"><div class="age-badge">13–14 tuổi</div><div class="motor-skills">Sức mạnh cơ bắp, phối hợp và sức bền tăng mạnh; tham gia thể thao chuyên sâu.</div></div>
+        <div class="motor-card"><div class="age-badge">15–18 tuổi</div><div class="motor-skills">Đạt mức thể chất như người trưởng thành, hoàn thiện kỹ thuật vận động phức tạp.</div></div>
+      </div>
+      <div class="motor-panel" id="motor-fine">
+        <div class="motor-card"><div class="age-badge">5–6 tuổi</div><div class="motor-skills">Cầm bút vẽ/tô màu, sao chép hình vẽ, vẽ người có ≥3 bộ phận, dùng kéo.</div></div>
+        <div class="motor-card"><div class="age-badge">7–8 tuổi</div><div class="motor-skills">Viết chữ rõ ràng, in chữ cái thành thạo, sử dụng thước kẻ và tẩy chính xác.</div></div>
+        <div class="motor-card"><div class="age-badge">9–10 tuổi</div><div class="motor-skills">Viết nhanh và nắn nót, bắt đầu sử dụng bàn phím máy tính hiệu quả.</div></div>
+        <div class="motor-card"><div class="age-badge">11–12 tuổi</div><div class="motor-skills">Viết lách dễ dàng, thao tác khéo léo với các vật nhỏ yêu cầu độ chính xác cao.</div></div>
+        <div class="motor-card"><div class="age-badge">13–14 tuổi</div><div class="motor-skills">Sử dụng công cụ tinh vi trong học tập, nghệ thuật hoặc kỹ thuật với độ tinh xảo cao.</div></div>
+        <div class="motor-card"><div class="age-badge">15–18 tuổi</div><div class="motor-skills">Đạt kỹ năng vận động tinh của người lớn; thực hiện tỉ mỉ các công việc khéo léo.</div></div>
+      </div>
+      <div class="motor-panel" id="motor-cognitive">
+        <div class="motor-card"><div class="age-badge">5 tuổi</div><div class="motor-skills">Nhận biết màu sắc, chữ cái, con số; biết tên và tuổi. Xu hướng quan sát tự tìm hiểu.</div></div>
+        <div class="motor-card"><div class="age-badge">6–7 tuổi</div><div class="motor-skills">Quan tâm sâu sắc đến môi trường xung quanh, nhạy cảm với nhận xét từ giáo viên/bạn bè.</div></div>
+        <div class="motor-card"><div class="age-badge">8–9 tuổi</div><div class="motor-skills">Phát triển trí tò mò mạnh mẽ; bắt đầu biết chấp nhận thua cuộc; hoàn thiện cảm nhận xúc giác.</div></div>
+        <div class="motor-card"><div class="age-badge">10–12 tuổi</div><div class="motor-skills">Tính tập thể rất cao, chơi theo nhóm; e thẹn trước người khác giới; quan sát cách ứng xử người lớn.</div></div>
+        <div class="motor-card"><div class="age-badge">13–15 tuổi</div><div class="motor-skills">Thay đổi mạnh về tâm sinh lý; chuyển từ tư duy trẻ con sang người lớn; hình thành bản sắc cá nhân.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏋️ 8 bài tập hỗ trợ tăng chiều cao</div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#e0f2fe">🏋️</div><div><div class="ex-name">Treo người trên xà</div><div class="ex-benefit">Kéo giãn cột sống, điều chỉnh tư thế xấu</div><div class="ex-note">Treo 10–20 giây/lần, lặp nhiều lần mỗi ngày</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#cffafe">🏊</div><div><div class="ex-name">Bơi lội</div><div class="ex-benefit">Giảm áp lực cột sống, thúc đẩy linh hoạt xương khớp</div><div class="ex-note">Đều đặn 3–4 buổi/tuần</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#dcfce7">🪢</div><div><div class="ex-name">Nhảy dây</div><div class="ex-benefit">Kích thích sụn tăng trưởng ở chân, tăng mật độ xương</div><div class="ex-note">10–15 phút mỗi ngày</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#ffedd5">🏃</div><div><div class="ex-name">Chạy nước rút tại chỗ</div><div class="ex-benefit">Kích hoạt hormone tăng trưởng, tăng sức mạnh cơ chân</div><div class="ex-note">Chạy nhanh 30 giây, nghỉ ngắn, lặp lại chu kỳ</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#fef9c3">🐍</div><div><div class="ex-name">Cobra Stretch</div><div class="ex-benefit">Kéo giãn cơ bụng, tăng khả năng vận động cột sống</div><div class="ex-note">Lòng bàn tay dưới vai, nâng ngực khi hít vào</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#fce7f3">🤸</div><div><div class="ex-name">Gập người chạm ngón chân</div><div class="ex-benefit">Kéo dài gân kheo và cột sống, điều chỉnh gù lưng</div><div class="ex-note">Hai chân rộng bằng hông, gập từ hông không cong lưng</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#ede9fe">🐱</div><div><div class="ex-name">Tư thế con mèo – con bò</div><div class="ex-benefit">Tăng linh hoạt, giảm căng thẳng lưng/cổ</div><div class="ex-note">Luân chuyển nhịp nhàng uốn cong và cong lưng hướng trần</div></div></div>
+      <div class="exercise-card"><div class="ex-icon" style="background:#f1f5f9">⛰️</div><div><div class="ex-name">Tư thế trái núi</div><div class="ex-benefit">Cải thiện thẳng hàng cơ thể, xây dựng tư thế đúng</div><div class="ex-note">Đứng thẳng, vươn đỉnh đầu, giữ 5–10 nhịp thở</div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB DINH DƯỠNG -->
+  <div class="tab-panel" id="tab-nutrition">
+    <div class="section-header"><div class="section-icon">🥗</div><div><h2>Thư viện Dinh dưỡng</h2><p>Dữ liệu từ Chuyên gia Dinh dưỡng Nhi khoa</p></div></div>
+    <div class="card">
+      <div class="card-title">📊 Bảng giá trị dinh dưỡng</div>
+      <div style="overflow-x:auto">
+      <table class="nutrition-table">
+        <thead><tr><th>Thực phẩm</th><th>Calo</th><th>Đạm (g)</th><th>Tinh bột (g)</th><th>Béo (g)</th></tr></thead>
+        <tbody>
+          <tr><td>Rau muống tươi (100g)</td><td>25</td><td>2.7</td><td>3.2</td><td>0.2</td></tr>
+          <tr><td>Rau muống luộc (100g)</td><td>30</td><td>2.7</td><td>3.2</td><td>0.2</td></tr>
+          <tr><td>Rau muống xào tỏi (100g)</td><td>140–150</td><td>2.7</td><td>3.2</td><td>Cao</td></tr>
+          <tr><td>Rau muống xào bò (1 phần)</td><td>350–400</td><td>25.0</td><td>TB</td><td>TB</td></tr>
+          <tr><td>Nộm rau muống thịt bò (1 đĩa)</td><td>250</td><td>15.0</td><td>TB</td><td>Thấp</td></tr>
+          <tr><td>Thịt ba chỉ heo (100g)</td><td>260</td><td>16.5</td><td>0</td><td>21.5</td></tr>
+          <tr><td>Trứng vịt (1 quả TB)</td><td>130</td><td>9.0</td><td>0.8</td><td>9.7</td></tr>
+          <tr><td>Thịt kho tàu (1 khẩu phần)</td><td>240</td><td>14.0</td><td>Thấp</td><td>Cao</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💡 Lời khuyên chuyên gia</div>
+      <div class="tip-card"><div class="tip-icon">🥛</div><div class="tip-title">Xây dựng miễn dịch từ bữa sáng</div><div class="tip-desc">Tuyệt đối không bỏ bữa sáng — bỏ bữa sáng tăng nguy cơ béo phì gấp 4 lần và ảnh hưởng não bộ.</div></div>
+      <div class="tip-card" style="border-left-color:#0ea5e9"><div class="tip-icon">🏷️</div><div class="tip-title">Thói quen tiêu dùng thông minh</div><div class="tip-desc">Dạy trẻ đọc nhãn thực phẩm. Thay thế nước ngọt bằng nước lọc hoặc nước trái cây tự nhiên.</div></div>
+      <div class="tip-card" style="border-left-color:#f59e0b"><div class="tip-icon">📱</div><div class="tip-title">Hạn chế màn hình</div><div class="tip-desc">Không để trẻ dùng thiết bị điện tử quá <strong>2 giờ/ngày</strong>. Gây rối loạn giấc ngủ, béo phì và giảm tập trung.</div></div>
+      <div class="tip-card" style="border-left-color:#22c55e"><div class="tip-icon">🌿</div><div class="tip-title">Ưu tiên rau muống đỏ</div><div class="tip-desc">Chứa chất chống oxy hóa gấp 3–4 lần rau muống xanh, đặc biệt giàu Sắt và Axit Folic.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ Lưu ý khi dùng rau muống</div>
+      <div class="warning-item"><span>🩹</span><span><strong>Vết thương hở:</strong> Nguy cơ kích thích collagen gây sẹo lồi.</span></div>
+      <div class="warning-item"><span>🪨</span><span><strong>Sỏi thận:</strong> Oxalate dễ kết tủa sỏi.</span></div>
+      <div class="warning-item"><span>🦵</span><span><strong>Bệnh Gout:</strong> Hàm lượng Purin cao làm trầm trọng thêm tình trạng viêm.</span></div>
+      <div class="warning-item"><span>🫃</span><span><strong>Hệ tiêu hóa kém:</strong> Rau muống có tính hàn, dễ gây khó tiêu hoặc tiêu chảy.</span></div>
+    </div>
+  </div>
+
+  <!-- TAB THEO DÕI -->
+  <div class="tab-panel" id="tab-tracking">
+    <div class="section-header"><div class="section-icon">📊</div><div><h2>Theo dõi sức khỏe</h2><p>Tổng quan phát triển gia đình</p></div></div>
+    <div class="tracking-grid">
+      <div class="track-card"><div class="track-icon">🍽️</div><div class="track-val">7/7</div><div class="track-label">Ngày thực đơn đủ</div></div>
+      <div class="track-card"><div class="track-icon">💧</div><div class="track-val">6/8</div><div class="track-label">Ly nước hôm nay</div></div>
+      <div class="track-card"><div class="track-icon">🏃</div><div class="track-val">45'</div><div class="track-label">Vận động hôm nay</div></div>
+      <div class="track-card"><div class="track-icon">😴</div><div class="track-val">8h</div><div class="track-label">Giờ ngủ tối qua</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Mục tiêu tuần</div>
+      <div id="trackingGoals"></div>
+    </div>
+  </div>
+
+  <!-- TAB AI COACH -->
+  <div class="tab-panel" id="tab-ai">
+    <div class="section-header"><div class="section-icon">✨</div><div><h2>AI Coach</h2><p>Tư vấn dinh dưỡng & tính năng lượng</p></div></div>
+    <div class="card">
+      <div class="card-title">🔢 Máy tính BMR / TDEE</div>
+      <p style="font-size:13px;color:#64748b;margin-bottom:14px">BMR = năng lượng cơ thể cần khi nghỉ hoàn toàn. TDEE = tổng năng lượng cần trong ngày.</p>
+      <div class="bmr-form">
+        <div class="form-group"><label>Giới tính</label><select id="bmrGender"><option value="male">Nam</option><option value="female">Nữ</option></select></div>
+        <div class="form-group"><label>Tuổi</label><input type="number" id="bmrAge" placeholder="VD: 16"/></div>
+        <div class="form-group"><label>Cân nặng (kg)</label><input type="number" id="bmrWeight" placeholder="VD: 58"/></div>
+        <div class="form-group"><label>Chiều cao (cm)</label><input type="number" id="bmrHeight" placeholder="VD: 170"/></div>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label style="font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:5px">Mức độ vận động</label>
+        <select id="bmrActivity" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13px;outline:none">
+          <option value="1.2">Ít vận động (ngồi nhiều, không tập)</option>
+          <option value="1.375">Nhẹ (tập 1–3 ngày/tuần)</option>
+          <option value="1.55" selected>Vừa phải (tập 3–5 ngày/tuần)</option>
+          <option value="1.725">Tích cực (tập 6–7 ngày/tuần)</option>
+          <option value="1.9">Rất tích cực (vận động viên)</option>
+        </select>
+      </div>
+      <button class="calc-btn" onclick="calcBMR()">⚡ Tính BMR & TDEE</button>
+      <div class="bmr-result" id="bmrResult">
+        <div style="font-weight:700;font-size:15px;margin-bottom:4px">Kết quả</div>
+        <div class="result-grid">
+          <div class="result-box"><div class="val" id="resBMR">—</div><div class="lbl">BMR (kcal/ngày)<br>Năng lượng nghỉ ngơi</div></div>
+          <div class="result-box"><div class="val" id="resTDEE" style="color:#0284c7">—</div><div class="lbl">TDEE (kcal/ngày)<br>Tổng năng lượng cần</div></div>
+        </div>
+        <div id="resAdvice" style="margin-top:12px;background:#fff;border-radius:11px;padding:12px;font-size:13px;color:#374151;line-height:1.7"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💬 Chat với AI Coach</div>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="sendQuick('Thực đơn hôm nay là gì?')">🍽️ Thực đơn hôm nay</button>
+        <button class="quick-btn" onclick="sendQuick('Con tôi cần ngủ bao nhiêu giờ?')">😴 Giờ ngủ cho con</button>
+        <button class="quick-btn" onclick="sendQuick('Bài tập nào giúp tăng chiều cao?')">💪 Tăng chiều cao</button>
+        <button class="quick-btn" onclick="sendQuick('Rau muống có tốt không?')">🌿 Dinh dưỡng rau muống</button>
+      </div>
+      <div class="chat-area" id="chatArea">
+        <div class="msg ai"><div class="msg-avatar">🌿</div><div class="msg-bubble">Xin chào! Tôi là AI Coach của GrowNest. Hãy hỏi tôi về dinh dưỡng, thực đơn, giấc ngủ hay bài tập cho gia đình bạn nhé! 😊</div></div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key==='Enter')sendChat()"/>
+        <button class="send-btn" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end content -->
+</div><!-- end mainApp -->
+
+<!-- MODAL SỬA THÀNH VIÊN (trong app) -->
+<div class="modal-overlay" id="appMemberModal">
+  <div class="modal">
+    <h3 id="appModalTitle">➕ Thêm thành viên</h3>
+    <div class="field-row">
+      <div class="field"><label>Tên *</label><input class="modal-input" id="amName" placeholder="VD: Ba Hùng" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+      <div class="field"><label>Tuổi *</label><input class="modal-input" id="amAge" type="number" placeholder="45" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Giới tính</label><select id="amGender" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"><option value="female">Nữ</option><option value="male">Nam</option></select></div>
+      <div class="field"><label>Vai trò</label><select id="amRole" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"><option>Bố</option><option>Mẹ</option><option>Ông</option><option>Bà</option><option>Anh/Chị</option><option>Em</option><option>Con</option></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Cân nặng (kg)</label><input id="amWeight" type="number" placeholder="68" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+      <div class="field"><label>Chiều cao (cm)</label><input id="amHeight" type="number" placeholder="172" style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+    </div>
+    <div class="field"><label>Sức khỏe / bệnh lý</label><input id="amHealth" placeholder="VD: Tiểu đường, dị ứng..." style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+    <div class="field"><label>Mục tiêu sức khỏe</label><input id="amGoal" placeholder="VD: Giảm 3kg, tăng chiều cao..." style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:11px;font-size:13.5px;outline:none"/></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeAppModal()">Huỷ</button>
+      <button class="btn-primary" onclick="saveAppMember()">Lưu ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════ DATA ═══════════════════
+let members = [];
+
+// ═══════════════════ DEFAULT MEMBERS ═══════════════════
+// Để trống — người dùng tự thêm thành viên gia đình qua giao diện
+const DEFAULT_MEMBERS = [];let tempTags = {like:[],dislike:[],health:[],goal:[]};
+let currentMode = 'mixed';
+let editIndex = -1;
+let favorites = new Set(); // lưu tên các món yêu thích
+
+const MENUS = {
+  mixed:[
+    {day:'Thứ 2',mode:'Truyền thống',bf:'Bánh mì trứng + sữa',lunch:['Gà rim gừng','Trứng hấp thịt','Canh rau ngót','Su su luộc','Chuối'],dinner:['Cá kho tiêu','Đậu phụ sốt cà','Canh bí đỏ','Cải thìa luộc','Táo']},
+    {day:'Thứ 3',mode:'Nấu nhanh',bf:'Cháo yến mạch thịt bằm',lunch:['Bò xào hành tây','Đậu phụ sốt cà','Canh bí xanh','Salad xà lách','Dưa hấu'],dinner:['Tôm rang ít dầu','Trứng cuộn rau củ','Canh cải nấu thịt','Bông cải hấp','Cam']},
+    {day:'Thứ 4',mode:'Healthy',bf:'Sữa chua + chuối + hạt',lunch:['Cá hồi áp chảo','Gà sốt tiêu đen','Canh cải nấu thịt','Bông cải hấp','Cam'],dinner:['Thịt nạc rang','Đậu phụ Nhật sốt nấm','Canh mướp','Rau muống luộc','Lê']},
+    {day:'Thứ 5',mode:'Truyền thống',bf:'Phở bò tại nhà',lunch:['Cá kho tiêu','Thịt nạc rang','Canh cua mồng tơi','Rau muống luộc','Táo'],dinner:['Gà rang gừng','Trứng rán hành','Canh bí xanh','Rau cải luộc','Thanh long']},
+    {day:'Thứ 6',mode:'Tiết kiệm',bf:'Xôi đậu + sữa',lunch:['Trứng cuộn rau củ','Cá sốt cà','Canh bí đỏ','Cải thìa xào tỏi','Thanh long'],dinner:['Thịt bằm rang','Đậu phụ nhồi thịt','Canh rau ngót','Su su luộc','Dưa hấu']},
+    {day:'Thứ 7',mode:'Đổi món',bf:'Pancake chuối',lunch:['Mì Ý bò bằm','Gà nướng mật ong','Súp bí đỏ','Salad cá ngừ','Kiwi'],dinner:['Tôm hấp sả','Sườn nướng','Canh chua cá','Rau củ luộc thập cẩm','Dứa']},
+    {day:'Chủ nhật',mode:'Family Day',bf:'Bún cá',lunch:['Sườn nướng','Tôm hấp sả','Canh chua cá','Rau củ luộc','Dứa'],dinner:['Cá kho tộ','Gà luộc','Canh xương khoai tây','Salad dưa chuột','Xoài']},
+  ],
+  traditional:[
+    {day:'Thứ 2',mode:'Cơm nhà',bf:'Bún mọc',lunch:['Thịt rang cháy cạnh','Cá rán','Canh rau ngót','Bắp cải luộc','Chuối'],dinner:['Gà rim','Đậu phụ sốt cà','Canh bí xanh','Rau cải luộc','Táo']},
+    {day:'Thứ 3',mode:'Cơm nhà',bf:'Cháo thịt bằm',lunch:['Gà rang gừng','Đậu phụ nhồi thịt','Canh bí xanh','Rau cải luộc','Dưa hấu'],dinner:['Cá kho','Trứng hấp','Canh rau ngót','Su su luộc','Cam']},
+    {day:'Thứ 4',mode:'Cơm nhà',bf:'Bánh mì trứng',lunch:['Tôm rang','Trứng rán hành','Canh mướp','Su hào xào','Cam'],dinner:['Thịt luộc','Cá sốt cà','Canh cua','Rau muống luộc','Táo']},
+    {day:'Thứ 5',mode:'Cơm nhà',bf:'Phở bò',lunch:['Cá sốt cà','Thịt luộc','Canh cua','Rau muống luộc','Táo'],dinner:['Bò xào cần tây','Trứng hấp','Canh cải','Đậu cô ve luộc','Thanh long']},
+    {day:'Thứ 6',mode:'Cơm nhà',bf:'Xôi đậu',lunch:['Bò xào cần tây','Trứng hấp','Canh cải','Đậu cô ve luộc','Thanh long'],dinner:['Gà luộc','Đậu phụ chiên','Canh bí đỏ','Bắp cải luộc','Dưa hấu']},
+    {day:'Thứ 7',mode:'Cuối tuần',bf:'Miến gà',lunch:['Nem rán','Gà luộc','Canh xương khoai tây','Salad dưa chuột','Xoài'],dinner:['Cá kho tộ','Tôm rim','Canh chua','Rau luộc tổng hợp','Dứa']},
+    {day:'Chủ nhật',mode:'Gia đình',bf:'Bún cá',lunch:['Cá kho tộ','Tôm rim','Canh chua','Rau luộc tổng hợp','Dứa'],dinner:['Sườn rim','Trứng cuộn','Canh mướp','Rau cải xào','Nho']},
+  ],
+  modern:[
+    {day:'Thứ 2',mode:'Healthy',bf:'Sữa chua + chuối + hạt',lunch:['Cá hồi áp chảo','Gà sốt tiêu đen','Soup nấm','Salad hạt','Kiwi'],dinner:['Bò cuộn rau củ','Tôm hấp','Canh bí đỏ','Bông cải hấp','Táo xanh']},
+    {day:'Thứ 3',mode:'Healthy',bf:'Sandwich trứng',lunch:['Bò cuộn rau củ','Tôm hấp','Canh bí đỏ','Bông cải hấp','Táo xanh'],dinner:['Gà nướng thảo mộc','Trứng cuộn rau','Soup rong biển','Salad cá ngừ','Cam']},
+    {day:'Thứ 4',mode:'Healthy',bf:'Overnight oats',lunch:['Gà nướng thảo mộc','Trứng cuộn rau','Soup rong biển','Salad cá ngừ','Cam'],dinner:['Cá ngừ áp chảo','Đậu phụ Nhật sốt nấm','Soup bí đỏ','Măng tây xào','Lê']},
+    {day:'Thứ 5',mode:'Healthy',bf:'Sinh tố chuối sữa',lunch:['Cá ngừ áp chảo','Đậu phụ Nhật','Soup bí đỏ','Măng tây xào','Lê'],dinner:['Tôm sốt bơ tỏi','Bò áp chảo','Canh cải thịt bằm','Salad trái cây','Dưa lưới']},
+    {day:'Thứ 6',mode:'Healthy',bf:'Bánh mì nguyên cám',lunch:['Tôm sốt bơ tỏi','Bò áp chảo','Canh cải','Salad trái cây','Dưa lưới'],dinner:['Gà áp chảo','Cá hồi nướng','Soup gà ngô','Salad rau củ','Nho']},
+    {day:'Thứ 7',mode:'Đổi món',bf:'Pancake yến mạch',lunch:['Pizza homemade','Gà BBQ','Soup kem nấm','Salad Caesar','Nho'],dinner:['Mì Ý bò bằm','Cá hồi nướng','Soup gà ngô','Salad rau củ','Việt quất']},
+    {day:'Chủ nhật',mode:'Đổi món',bf:'Smoothie bowl',lunch:['Mì Ý bò bằm','Cá hồi nướng','Soup gà ngô','Salad rau củ','Việt quất'],dinner:['Gà nướng mật ong','Tôm hấp','Soup bí đỏ','Bông cải hấp','Kiwi']},
+  ],
+  saving:[
+    {day:'Thứ 2',mode:'Tiết kiệm',bf:'Trứng + bánh mì',lunch:['Trứng chiên','Gà rang','Canh rau cải','Bí luộc','Chuối'],dinner:['Cá nục sốt cà','Đậu phụ sốt thịt','Canh bí xanh','Rau muống luộc','Dưa hấu']},
+    {day:'Thứ 3',mode:'Tiết kiệm',bf:'Cháo trứng',lunch:['Cá nục sốt cà','Đậu phụ sốt thịt','Canh bí xanh','Rau muống luộc','Dưa hấu'],dinner:['Thịt bằm rang','Trứng hấp','Canh rau ngót','Su su luộc','Cam']},
+    {day:'Thứ 4',mode:'Tiết kiệm',bf:'Xôi lạc + sữa',lunch:['Thịt bằm rang','Trứng hấp','Canh rau ngót','Su su luộc','Cam'],dinner:['Cá kho','Đậu phụ nhồi thịt','Canh mướp','Rau cải','Táo']},
+    {day:'Thứ 5',mode:'Tiết kiệm',bf:'Bún trứng',lunch:['Cá kho','Đậu phụ nhồi thịt','Canh mướp','Rau cải','Táo'],dinner:['Gà xé trộn','Trứng cuộn','Canh bí đỏ','Salad dưa leo','Thanh long']},
+    {day:'Thứ 6',mode:'Tiết kiệm',bf:'Khoai + sữa',lunch:['Gà xé trộn','Trứng cuộn','Canh bí đỏ','Salad dưa leo','Thanh long'],dinner:['Cơm rang thập cẩm','Đậu phụ chiên','Canh rau củ','Bắp cải xào','Xoài']},
+    {day:'Thứ 7',mode:'Tận dụng',bf:'Bánh mì kẹp trứng',lunch:['Cơm rang thập cẩm','Đậu phụ chiên','Canh rau củ','Bắp cải xào','Xoài'],dinner:['Cá chiên','Tôm rim','Canh chua','Rau luộc tổng hợp','Dứa']},
+    {day:'Chủ nhật',mode:'Gia đình',bf:'Mì rau trứng',lunch:['Cá chiên','Tôm rim','Canh chua','Rau luộc','Dứa'],dinner:['Trứng cuộn','Thịt rang','Canh bí','Rau cải luộc','Chuối']},
+  ]
+};
+
+const AI_TIPS = {
+  mixed:'💬 <strong>AI:</strong> Tuần này kết hợp món Việt truyền thống ngày thường và đổi món hiện đại cuối tuần.',
+  traditional:'💬 <strong>AI:</strong> Tuần này ưu tiên cơm nhà truyền thống, món dễ ăn, đủ canh – rau – đạm.',
+  modern:'💬 <strong>AI:</strong> Tuần này đổi món hiện đại, ít dầu, nhiều protein tốt, giúp trẻ hào hứng hơn.',
+  saving:'💬 <strong>AI:</strong> Tuần này tối ưu ngân sách, dùng nguyên liệu lặp thông minh và giảm lãng phí.',
+};
+
+const SLEEP_DATA = [
+  {hours:'14–17',group:'Sơ sinh (0–3 tháng)'},
+  {hours:'12–15',group:'Trẻ nhỏ (4–11 tháng)'},
+  {hours:'12–14',group:'Chập chững (1–3 tuổi)'},
+  {hours:'10–13',group:'Mẫu giáo (3–5 tuổi)'},
+  {hours:'9–11', group:'Thiếu nhi (6–13 tuổi)'},
+  {hours:'8–10', group:'Thiếu niên (14–17 tuổi)'},
+  {hours:'8–9',  group:'Thanh niên (17–24 tuổi)'},
+  {hours:'7–9',  group:'Người lớn (24–65 tuổi)'},
+];
+
+// ═══════════════════ FOODS DATABASE ═══════════════════
+// cal=kcal/khẩu phần, p=protein(g), c=carbs(g), f=fat(g)
+// avoid=danh sách bệnh cần tránh, tags=nhóm nguyên liệu
+const FOODS = {
+  breakfast: [
+    {name:'Bánh mì trứng',cal:320,p:14,c:38,f:12,avoid:[],tags:['egg','bread']},
+    {name:'Cháo yến mạch thịt bằm',cal:280,p:16,c:40,f:6,avoid:[],tags:['oat','pork']},
+    {name:'Sữa chua + chuối + hạt',cal:250,p:8,c:35,f:8,avoid:['tiểu đường'],tags:['dairy','fruit']},
+    {name:'Phở bò tại nhà',cal:420,p:22,c:55,f:10,avoid:['gout'],tags:['beef','noodle']},
+    {name:'Xôi đậu',cal:380,p:10,c:72,f:4,avoid:['tiểu đường','béo phì'],tags:['rice','bean']},
+    {name:'Pancake chuối',cal:290,p:8,c:45,f:8,avoid:['tiểu đường'],tags:['flour','egg']},
+    {name:'Bún cá',cal:350,p:20,c:48,f:6,avoid:[],tags:['fish','noodle']},
+    {name:'Sandwich trứng',cal:300,p:14,c:35,f:10,avoid:[],tags:['egg','bread']},
+    {name:'Cháo trứng',cal:220,p:12,c:32,f:5,avoid:[],tags:['egg','rice']},
+    {name:'Bún mọc',cal:360,p:18,c:48,f:8,avoid:[],tags:['pork','noodle']},
+    {name:'Miến gà',cal:340,p:18,c:50,f:6,avoid:[],tags:['chicken','noodle']},
+    {name:'Xôi lạc + sữa',cal:400,p:12,c:68,f:10,avoid:['tiểu đường','béo phì'],tags:['rice','peanut']},
+    {name:'Sinh tố chuối sữa',cal:230,p:6,c:40,f:4,avoid:['tiểu đường'],tags:['fruit','dairy']},
+    {name:'Bánh mì nguyên cám',cal:260,p:9,c:42,f:5,avoid:[],tags:['bread']},
+    {name:'Overnight oats + sữa',cal:310,p:10,c:50,f:7,avoid:[],tags:['oat','dairy']},
+    {name:'Cháo thịt bằm',cal:260,p:16,c:34,f:7,avoid:[],tags:['pork','rice']},
+    {name:'Bánh mì kẹp pate',cal:350,p:12,c:40,f:15,avoid:['cao huyết áp'],tags:['bread','pork']},
+    {name:'Bún riêu',cal:380,p:18,c:52,f:8,avoid:['dị ứng hải sản'],tags:['seafood','noodle']},
+    {name:'Xôi thịt hành',cal:420,p:15,c:70,f:10,avoid:['tiểu đường','béo phì'],tags:['rice','pork']},
+    {name:'Mì tôm xúc xích',cal:440,p:13,c:58,f:18,avoid:[],tags:['noodle','pork']},
+    {name:'Hến xúc bánh đa',cal:285,p:16,c:36,f:7,avoid:['dị ứng hải sản'],tags:['seafood','rice']},
+  ],
+  protein: [
+    {name:'Gà rim gừng',cal:185,p:24,c:5,f:7,avoid:[],tags:['chicken','poultry']},
+    {name:'Cá kho tiêu',cal:165,p:22,c:3,f:7,avoid:[],tags:['fish']},
+    {name:'Bò xào hành tây',cal:210,p:22,c:8,f:10,avoid:['gout'],tags:['beef']},
+    {name:'Tôm rang ít dầu',cal:145,p:20,c:4,f:5,avoid:['dị ứng hải sản','gout'],tags:['seafood','shrimp']},
+    {name:'Cá hồi áp chảo',cal:220,p:25,c:0,f:13,avoid:[],tags:['fish','salmon']},
+    {name:'Thịt nạc rang',cal:175,p:23,c:2,f:8,avoid:[],tags:['pork']},
+    {name:'Trứng hấp thịt',cal:155,p:14,c:3,f:9,avoid:[],tags:['egg','pork']},
+    {name:'Đậu phụ sốt cà',cal:130,p:9,c:10,f:6,avoid:['sỏi thận'],tags:['tofu']},
+    {name:'Gà nướng mật ong',cal:210,p:26,c:8,f:8,avoid:[],tags:['chicken','poultry']},
+    {name:'Sườn rim',cal:260,p:20,c:6,f:16,avoid:['gout','cao huyết áp'],tags:['pork','ribs']},
+    {name:'Sườn nướng',cal:280,p:22,c:4,f:18,avoid:['gout','cao huyết áp'],tags:['pork','ribs']},
+    {name:'Thịt bằm rang',cal:160,p:18,c:3,f:8,avoid:[],tags:['pork']},
+    {name:'Gà rang gừng',cal:190,p:25,c:4,f:8,avoid:[],tags:['chicken','poultry']},
+    {name:'Cá sốt cà',cal:160,p:20,c:8,f:5,avoid:[],tags:['fish']},
+    {name:'Trứng rán hành',cal:145,p:12,c:2,f:10,avoid:[],tags:['egg']},
+    {name:'Bò áp chảo',cal:230,p:25,c:2,f:13,avoid:['gout'],tags:['beef']},
+    {name:'Tôm hấp sả',cal:130,p:18,c:3,f:4,avoid:['dị ứng hải sản'],tags:['seafood','shrimp']},
+    {name:'Cá kho tộ',cal:175,p:22,c:5,f:7,avoid:[],tags:['fish']},
+    {name:'Trứng cuộn rau củ',cal:140,p:12,c:6,f:8,avoid:[],tags:['egg']},
+    {name:'Đậu phụ nhồi thịt',cal:150,p:12,c:5,f:8,avoid:['sỏi thận'],tags:['tofu','pork']},
+    {name:'Gà luộc',cal:165,p:24,c:0,f:7,avoid:[],tags:['chicken','poultry']},
+    {name:'Cá chiên',cal:200,p:22,c:5,f:10,avoid:[],tags:['fish']},
+    {name:'Thịt luộc',cal:155,p:20,c:0,f:8,avoid:[],tags:['pork']},
+    {name:'Cá nục sốt cà',cal:150,p:18,c:7,f:5,avoid:[],tags:['fish']},
+    {name:'Gà sốt tiêu đen',cal:195,p:24,c:6,f:8,avoid:[],tags:['chicken','poultry']},
+    {name:'Thịt heo kho tiêu',cal:200,p:20,c:4,f:11,avoid:['cao huyết áp'],tags:['pork']},
+    {name:'Đậu phụ Nhật sốt nấm',cal:120,p:9,c:7,f:6,avoid:['sỏi thận'],tags:['tofu']},
+    {name:'Cá hấp gừng hành',cal:155,p:23,c:2,f:5,avoid:[],tags:['fish']},
+    {name:'Nem rán',cal:220,p:14,c:20,f:10,avoid:[],tags:['pork','egg']},
+    {name:'Sườn chua ngọt',cal:265,p:19,c:16,f:13,avoid:['cao huyết áp'],tags:['pork','ribs']},
+    {name:'Ức gà áp chảo',cal:180,p:28,c:2,f:6,avoid:[],tags:['chicken','poultry']},
+    {name:'Trứng đúc thịt',cal:160,p:14,c:4,f:9,avoid:[],tags:['egg','pork']},
+    {name:'Đậu phụ rán',cal:145,p:8,c:5,f:10,avoid:['sỏi thận'],tags:['tofu']},
+    {name:'Gà rán giòn',cal:250,p:22,c:10,f:13,avoid:[],tags:['chicken','poultry']},
+    {name:'Cá basa kho tộ',cal:165,p:20,c:4,f:7,avoid:[],tags:['fish']},
+  ],
+  soup: [
+    {name:'Canh rau ngót',cal:45,p:3,c:5,f:1,avoid:[],tags:['veg']},
+    {name:'Canh bí đỏ',cal:55,p:2,c:9,f:1,avoid:[],tags:['veg']},
+    {name:'Canh cải nấu thịt',cal:75,p:6,c:5,f:3,avoid:[],tags:['veg','pork']},
+    {name:'Canh cua mồng tơi',cal:65,p:5,c:5,f:2,avoid:['dị ứng hải sản'],tags:['seafood','veg']},
+    {name:'Canh bí xanh',cal:40,p:2,c:6,f:1,avoid:[],tags:['veg']},
+    {name:'Canh chua cá',cal:80,p:7,c:8,f:2,avoid:[],tags:['fish']},
+    {name:'Canh mướp',cal:40,p:2,c:6,f:1,avoid:[],tags:['veg']},
+    {name:'Canh xương khoai tây',cal:120,p:8,c:12,f:5,avoid:[],tags:['pork','bone']},
+    {name:'Soup bí đỏ',cal:60,p:2,c:10,f:1,avoid:[],tags:['veg']},
+    {name:'Soup nấm',cal:50,p:3,c:7,f:1,avoid:[],tags:['mushroom']},
+    {name:'Canh rau cải',cal:40,p:2,c:5,f:1,avoid:[],tags:['veg']},
+    {name:'Canh khổ qua thịt',cal:70,p:6,c:5,f:3,avoid:[],tags:['veg','pork']},
+    {name:'Canh nghêu bầu',cal:60,p:5,c:5,f:2,avoid:['dị ứng hải sản'],tags:['seafood','veg']},
+  ],
+  veg: [
+    {name:'Su su luộc',cal:35,p:1,c:7,f:0,avoid:[],tags:['veg']},
+    {name:'Rau muống luộc',cal:30,p:3,c:3,f:0,avoid:['sỏi thận','gout'],tags:['veg']},
+    {name:'Bông cải hấp',cal:35,p:3,c:5,f:0,avoid:[],tags:['veg']},
+    {name:'Rau cải luộc',cal:25,p:2,c:3,f:0,avoid:[],tags:['veg']},
+    {name:'Cải thìa luộc',cal:25,p:2,c:3,f:0,avoid:[],tags:['veg']},
+    {name:'Salad xà lách',cal:20,p:1,c:3,f:0,avoid:[],tags:['veg','salad']},
+    {name:'Bắp cải luộc',cal:30,p:2,c:5,f:0,avoid:[],tags:['veg']},
+    {name:'Đậu cô ve luộc',cal:35,p:2,c:6,f:0,avoid:[],tags:['veg']},
+    {name:'Salad dưa chuột',cal:15,p:1,c:2,f:0,avoid:[],tags:['veg','salad']},
+    {name:'Rau củ luộc thập cẩm',cal:55,p:2,c:10,f:0,avoid:[],tags:['veg']},
+    {name:'Măng tây xào tỏi',cal:45,p:2,c:6,f:1,avoid:[],tags:['veg']},
+    {name:'Su hào xào',cal:40,p:1,c:7,f:1,avoid:[],tags:['veg']},
+    {name:'Cải xanh xào tỏi',cal:50,p:2,c:5,f:2,avoid:[],tags:['veg']},
+  ],
+  fruit: [
+    {name:'Chuối',cal:90,p:1,c:23,f:0,avoid:['tiểu đường'],tags:['fruit']},
+    {name:'Cam',cal:60,p:1,c:14,f:0,avoid:[],tags:['fruit']},
+    {name:'Táo',cal:55,p:0,c:14,f:0,avoid:[],tags:['fruit']},
+    {name:'Dưa hấu',cal:50,p:1,c:12,f:0,avoid:['tiểu đường'],tags:['fruit']},
+    {name:'Xoài',cal:70,p:1,c:17,f:0,avoid:['tiểu đường'],tags:['fruit']},
+    {name:'Dứa',cal:55,p:1,c:13,f:0,avoid:[],tags:['fruit']},
+    {name:'Kiwi',cal:50,p:1,c:12,f:0,avoid:[],tags:['fruit']},
+    {name:'Lê',cal:50,p:0,c:13,f:0,avoid:[],tags:['fruit']},
+    {name:'Thanh long',cal:55,p:1,c:13,f:0,avoid:[],tags:['fruit']},
+    {name:'Nho',cal:65,p:1,c:16,f:0,avoid:['tiểu đường'],tags:['fruit']},
+    {name:'Ổi',cal:45,p:1,c:10,f:0,avoid:[],tags:['fruit']},
+    {name:'Đu đủ',cal:55,p:1,c:13,f:0,avoid:[],tags:['fruit']},
+  ]
+};
+
+// ═══════════════════ HEALTH RULES ═══════════════════
+// tip: lời khuyên hiển thị dưới thực đơn khi gia đình có bệnh này
+const HEALTH_RULES = {
+  'tiểu đường': {
+    avoidFoods:['Chuối','Dưa hấu','Xoài','Nho','Xôi đậu','Xôi lạc + sữa','Pancake chuối',
+                'Sữa chua + chuối + hạt','Sinh tố chuối sữa','Bún cá','Bún mọc','Bún riêu',
+                'Phở bò tại nhà','Miến gà'],
+    avoidTags:[], note:'Tránh đường & tinh bột nhanh',
+    tip:'💡 Mẹo tiểu đường: Ăn rau xanh trước → đạm sau → tinh bột cuối để ổn định đường huyết. Chia 5–6 bữa nhỏ thay vì 3 bữa lớn.'
+  },
+  'đái tháo đường': {
+    avoidFoods:['Chuối','Dưa hấu','Xoài','Nho','Xôi đậu','Xôi lạc + sữa'],
+    avoidTags:[], note:'Hạn chế đường',
+    tip:'💡 Mẹo tiểu đường: Ăn rau xanh trước → đạm sau → tinh bột cuối để ổn định đường huyết.'
+  },
+  'sỏi thận': {
+    avoidFoods:['Rau muống luộc','Đậu phụ sốt cà','Đậu phụ nhồi thịt','Đậu phụ Nhật sốt nấm'],
+    avoidTags:[], note:'Tránh oxalate & purin cao',
+    tip:'💧 Uống đủ 2–2.5 lít nước/ngày để ngăn ngừa sỏi tái phát.'
+  },
+  'gout': {
+    avoidFoods:['Sườn rim','Sườn nướng','Rau muống luộc','Bò xào hành tây','Bò áp chảo','Phở bò tại nhà','Nem rán'],
+    avoidTags:['seafood'], note:'Hạn chế purin cao',
+    tip:'💡 Gout: Uống nhiều nước, hạn chế bia rượu. Ưu tiên gà, cá nước ngọt và trứng.'
+  },
+  'dị ứng hải sản': {
+    avoidFoods:[], avoidTags:['seafood'], note:'Loại bỏ hoàn toàn hải sản',
+    tip:'⚠️ Dị ứng hải sản: Kiểm tra kỹ nguyên liệu canh và gia vị. Luôn có thuốc kháng histamine dự phòng.'
+  },
+  'cao huyết áp': {
+    avoidFoods:['Sườn rim','Sườn nướng','Thịt heo kho tiêu','Bánh mì kẹp pate',
+                'Cá kho tộ','Cá kho tiêu','Thịt heo kho tiêu'],
+    avoidTags:[], note:'Ăn nhạt, tránh mặn, tránh mỡ động vật',
+    tip:'🧂 Cao huyết áp: Mục tiêu < 5g muối/ngày. Nêm nhạt, bỏ da gia cầm, tránh đồ kho rim đậm vị và nội tạng.'
+  },
+  'tim mạch': {
+    avoidFoods:['Sườn rim','Sườn nướng','Thịt heo kho tiêu','Bánh mì kẹp pate'],
+    avoidTags:[], note:'Hạn chế mỡ bão hòa & muối',
+    tip:'❤️ Tim mạch: Ưu tiên cá hồi, dầu ô liu. Hạn chế mỡ động vật và thực phẩm chế biến sẵn.'
+  },
+  'béo phì': {
+    avoidFoods:['Xôi đậu','Xôi lạc + sữa','Sườn nướng','Sườn rim','Nem rán','Bánh mì kẹp pate'],
+    avoidTags:[], note:'Ưu tiên món ít calo',
+    tip:'🥗 Kiểm soát cân nặng: Ưu tiên rau xanh + đạm nạc. Hạn chế tinh bột tinh chế và đồ chiên xào nhiều dầu.'
+  },
+  'viêm dạ dày': {
+    avoidFoods:['Canh chua cá','Canh cua mồng tơi','Canh nghêu bầu'],
+    avoidTags:[], note:'Tránh đồ chua, cay, lên men',
+    tip:'🍚 Dạ dày: Chia nhỏ thành 5–6 bữa/ngày. Ưu tiên cháo, súp, thức ăn mềm nấu chín. Tránh ăn quá no hoặc bỏ bữa.'
+  },
+  'adhd': {
+    avoidFoods:['Pancake chuối','Sữa chua + chuối + hạt','Sinh tố chuối sữa'],
+    avoidTags:[], note:'Hạn chế đường, phẩm màu nhân tạo',
+    tip:'🧠 ADHD: Ưu tiên cá hồi, trứng, thịt bò (Omega-3 & sắt hỗ trợ dẫn truyền thần kinh). Hạn chế đồ ngọt, nước có ga, thực phẩm chứa phẩm màu nhân tạo.'
+  },
+  'tăng động': {
+    avoidFoods:['Pancake chuối','Sữa chua + chuối + hạt'],
+    avoidTags:[], note:'Hạn chế đường & phẩm màu',
+    tip:'🧠 Tăng động: Ưu tiên cá hồi (Omega-3), thịt bò, trứng. Tránh nước ngọt, kẹo và đồ ăn có màu nhân tạo.'
+  },
+  'táo bón':         {avoidFoods:[], avoidTags:[], note:'Ăn nhiều rau và uống đủ nước', tip:'🥦 Ăn nhiều rau, trái cây và uống đủ 8 ly nước mỗi ngày.'},
+};
+
+// ═══════════════════ TDEE CALCULATION ═══════════════════
+// Công thức Mifflin-St Jeor + chuẩn Viện Dinh dưỡng VN cho trẻ nhỏ
+function calcTDEE(member) {
+  const age = member.age || 0;
+  const w   = member.weight || 0;
+  const h   = member.height || 0;
+
+  // ── Trẻ dưới 6 tuổi: hardcode theo Viện Dinh dưỡng VN ──
+  if (age < 1)  return 700;    // < 12 tháng
+  if (age < 2)  return 950;    // 1 tuổi
+  if (age <= 3) return 1100;   // 1–3 tuổi
+  if (age <= 6) return 1500;   // 4–6 tuổi (khuyến nghị 1400–1600, lấy 1500)
+
+  // ── Trẻ & người lớn không có số đo: ước tính theo tuổi ──
+  if (!w || !h) {
+    if (age < 10) return 1600;
+    if (age < 13) return 1800;
+    if (age < 16) return member.gender === 'male' ? 2100 : 1900;
+    if (age < 18) return member.gender === 'male' ? 2400 : 2000;
+    if (age < 60) return member.gender === 'male' ? 2300 : 1900;
+    return 1800;
+  }
+
+  // ── Mifflin-St Jeor (từ 7 tuổi trở lên, có số đo) ──
+  let bmr;
+  if (member.gender === 'male') {
+    bmr = 88.362 + 13.397 * w + 4.799 * h - 5.677 * age;
+  } else {
+    bmr = 447.593 + 9.247 * w + 3.098 * h - 4.330 * age;
+  }
+  return Math.round(bmr * 1.55);
+}
+
+// BMI + phân loại (chuẩn WHO châu Á – Thái Bình Dương)
+function calcBMI(member) {
+  if (!member.weight || !member.height || member.age < 18) return null;
+  const bmi = member.weight / Math.pow(member.height / 100, 2);
+  let cls, color;
+  if      (bmi < 18.5) { cls = 'Thiếu cân';        color = '#0284c7'; }
+  else if (bmi < 23)   { cls = 'Bình thường';       color = '#059669'; }
+  else if (bmi < 25)   { cls = 'Thừa cân';          color = '#f59e0b'; }
+  else if (bmi < 30)   { cls = 'Béo phì độ I';      color = '#ef4444'; }
+  else                 { cls = 'Béo phì độ II+';    color = '#b91c1c'; }
+  return { value: bmi.toFixed(1), cls, color };
+}
+
+// ═══════════════════ GIA ĐÌNH HẠN CHẾ ĂN GÌ ═══════════════════
+// Gom các tips y khoa của gia đình
+function getFamilyTips() {
+  const seen = new Set();
+  const tips = [];
+  members.forEach(m => {
+    m.health.forEach(cond => {
+      const cl = cond.toLowerCase();
+      Object.entries(HEALTH_RULES).forEach(([key, rule]) => {
+        if (cl.includes(key) && rule.tip && !seen.has(rule.tip)) {
+          seen.add(rule.tip);
+          tips.push({ member: m.name, tip: rule.tip });
+        }
+      });
+    });
+  });
+  return tips;
+}
+
+function getFamilyRestrictions() {
+  const avoidFoods = new Set();
+  const avoidTags  = new Set();
+  const notes      = [];
+  members.forEach(m => {
+    // Bệnh lý -> restrict
+    m.health.forEach(cond => {
+      const cl = cond.toLowerCase();
+      Object.entries(HEALTH_RULES).forEach(([key, rule]) => {
+        if (cl.includes(key)) {
+          rule.avoidFoods.forEach(f => avoidFoods.add(f));
+          rule.avoidTags.forEach(t  => avoidTags.add(t));
+          if (!notes.includes(m.name + ': ' + rule.note))
+            notes.push(m.name + ': ' + rule.note);
+        }
+      });
+    });
+    // Món không thích -> loại
+    m.dislikes.forEach(d => avoidFoods.add(d));
+  });
+  return { avoidFoods, avoidTags, notes };
+}
+
+// ═══════════════════ SMART MENU ENGINE ═══════════════════
+function generateSmartMenu() {
+  const { avoidFoods, avoidTags } = getFamilyRestrictions();
+  const avgTDEE = members.length
+    ? Math.round(members.reduce((s, m) => s + calcTDEE(m), 0) / members.length)
+    : 2000;
+
+  // Lọc pool theo hạn chế của gia đình
+  function filterPool(pool) {
+    return pool.filter(f => {
+      if (avoidFoods.has(f.name)) return false;
+      if (f.tags.some(t => avoidTags.has(t))) return false;
+      if (f.avoid.some(cond => members.some(m => m.health.some(h => h.toLowerCase().includes(cond.toLowerCase()))))) return false;
+      return true;
+    });
+  }
+
+  // Fisher-Yates shuffle
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Tổng hợp món yêu thích: global favorites + member.likes của từng thành viên
+  const likedByFamily = new Set([...favorites]);
+  members.forEach(m => { (m.likes||[]).forEach(n => likedByFamily.add(n)); });
+
+  // Tạo queue xoay vòng: ưu tiên món yêu thích, đảm bảo không lặp trong tuần
+  function makeQueue(pool) {
+    const favs = pool.filter(f => likedByFamily.has(f.name));
+    const rest = pool.filter(f => !likedByFamily.has(f.name));
+    // Xáo trộn từng nhóm riêng, favs lên trước
+    return shuffle(favs).concat(shuffle(rest));
+  }
+
+  // Bộ picker dùng queue xoay vòng — tránh lặp tối đa, reset khi hết
+  // Tags xác định nguyên liệu chính — không chọn 2 món cùng loại trong 1 bữa
+  const MAIN_TAGS = ['egg','poultry','pork','beef','fish','seafood','tofu'];
+
+  function makeRotatingPicker(pool) {
+    let queue = makeQueue(pool);
+    return function pickNext(excludeNames, excludeTags) {
+      excludeNames = excludeNames || [];
+      excludeTags  = excludeTags  || [];
+      const ok = f =>
+        !excludeNames.includes(f.name) &&
+        !f.tags.some(t => excludeTags.includes(t));
+      let idx = queue.findIndex(ok);
+      if (idx === -1) {
+        // Reset queue, bỏ qua excludeNames; giữ excludeTags nếu còn đủ pool
+        const reset = makeQueue(pool).filter(f => !excludeNames.includes(f.name));
+        queue = reset.filter(f => !f.tags.some(t => excludeTags.includes(t)));
+        if (!queue.length) queue = reset.length ? reset : makeQueue(pool);
+        idx = 0;
+      }
+      return queue.splice(idx, 1)[0];
+    };
+  }
+
+  const bfPool    = filterPool(FOODS.breakfast);
+  const protPool  = filterPool(FOODS.protein);
+  const soupPool  = filterPool(FOODS.soup);
+  const vegPool   = filterPool(FOODS.veg);
+  const fruitPool = filterPool(FOODS.fruit);
+
+  // Fallback nếu pool rỗng sau lọc
+  const safeBf    = bfPool.length    ? bfPool    : FOODS.breakfast;
+  const safeProt  = protPool.length  ? protPool  : FOODS.protein;
+  const safeSoup  = soupPool.length  ? soupPool  : FOODS.soup;
+  const safeVeg   = vegPool.length   ? vegPool   : FOODS.veg;
+  const safeFruit = fruitPool.length ? fruitPool : FOODS.fruit;
+
+  // Tạo picker riêng cho từng nhóm — mỗi picker nhớ queue cả tuần
+  const pickBf    = makeRotatingPicker(safeBf);
+  const pickProt  = makeRotatingPicker(safeProt);
+  const pickSoup  = makeRotatingPicker(safeSoup);
+  const pickVeg   = makeRotatingPicker(safeVeg);
+  const pickFruit = makeRotatingPicker(safeFruit);
+
+  const days = ['Th\u1ee9 2','Th\u1ee9 3','Th\u1ee9 4','Th\u1ee9 5','Th\u1ee9 6','Th\u1ee9 7','Ch\u1ee7 nh\u1eadt'];
+
+  const menu = days.map((day) => {
+    // Bữa sáng
+    const bf = pickBf();
+
+    // Helper: lấy main-protein-tags của 1 món
+    const mainTags = f => f.tags.filter(t => MAIN_TAGS.includes(t));
+
+    // Bữa trưa: 2 đạm — khác tên + khác nguyên liệu chính
+    const lp1 = pickProt();
+    const lp2 = pickProt([lp1.name], mainTags(lp1));
+    const ls  = pickSoup();
+    const lv  = pickVeg();
+    const lf  = pickFruit();
+
+    // Bữa tối: 2 đạm — khác tên + khác nguyên liệu chính (cũng tránh nguyên liệu đã dùng buổi trưa)
+    const dp1 = pickProt([lp1.name, lp2.name]);
+    const dp2 = pickProt([lp1.name, lp2.name, dp1.name], mainTags(dp1));
+    const ds  = pickSoup([ls.name]);
+    const dv  = pickVeg([lv.name]);
+    const df  = pickFruit([lf.name]);
+
+    // Cơm ≈ 300 kcal / 7g đạm mỗi bữa chính
+    const riceKcal = 300, riceProt = 7;
+    const kcal = (bf.cal||0)
+               + (lp1.cal||0) + (lp2.cal||0) + (ls.cal||0) + (lv.cal||0) + (lf.cal||0) + riceKcal
+               + (dp1.cal||0) + (dp2.cal||0) + (ds.cal||0) + (dv.cal||0) + (df.cal||0) + riceKcal;
+    const prot = (bf.p||0)
+               + (lp1.p||0) + (lp2.p||0) + (ls.p||0) + (lv.p||0) + (lf.p||0) + riceProt
+               + (dp1.p||0) + (dp2.p||0) + (ds.p||0) + (dv.p||0) + (df.p||0) + riceProt;
+
+    return {
+      day,
+      mode: 'AI Th\u00f4ng Minh',
+      bf:     bf.name,
+      lunch:  [lp1,lp2,ls,lv,lf].map(x=>x.name),
+      dinner: [dp1,dp2,ds,dv,df].map(x=>x.name),
+      kcal, prot,
+      tdeeRef: avgTDEE,
+    };
+  });
+
+  return { menu, avgTDEE };
+}
+
+
+function regenSmartMenu() {
+  const { menu, avgTDEE } = generateSmartMenu();
+  MENUS['smart'] = menu;
+
+  // Ghi chú hạn chế thực phẩm
+  const { notes } = getFamilyRestrictions();
+  const noteEl = document.getElementById('smartNote');
+  const tdeeList = members.map(m => `${m.name.split(' ').pop()}: ~${calcTDEE(m)} kcal`).join(' · ');
+  let html = `🧠 <strong>Thực đơn thông minh đã tạo!</strong><br>`;
+  html += `⚡ TDEE mỗi người: ${tdeeList}<br>`;
+  html += `🍽️ Mục tiêu ~${avgTDEE} kcal/ngày (trung bình gia đình)`;
+  if (notes.length) html += `<br>⚠️ Đã lọc theo: ${notes.join(' · ')}`;
+  noteEl.innerHTML = html;
+  noteEl.classList.add('show');
+
+  saveToStorage();
+  renderMenu();
+}
+
+// ═══════════════════ TDEE DISPLAY IN AI TIPS ═══════════════════
+AI_TIPS['smart'] = '💬 <strong>AI:</strong> Thực đơn tính theo TDEE từng người, lọc theo bệnh lý & ưu tiên món yêu thích!';
+
+// ═══════════════════ ONBOARDING TAGS ═══════════════════
+function addTag(type){
+  const input = document.getElementById('f'+cap(type)+'Input');
+  const val = input.value.trim();
+  if(!val) return;
+  tempTags[type].push(val);
+  input.value = '';
+  renderTags(type);
+}
+function removeTag(type, idx){
+  tempTags[type].splice(idx,1);
+  renderTags(type);
+}
+function renderTags(type){
+  const container = document.getElementById('f'+cap(type)+'Tags');
+  container.innerHTML = tempTags[type].map((t,i)=>`
+    <span class="tag ${type}">
+      ${t}
+      <span class="tag-x" onclick="removeTag('${type}',${i})">×</span>
+    </span>`).join('');
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+// ═══════════════════ ONBOARDING STEPS ═══════════════════
+function goStep(n){
+  document.getElementById('step0').style.display = 'none';
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step'+n).style.display = 'block';
+}
+
+function openAddMember(){
+  // reset form
+  ['fName','fAge','fWeight','fHeight','fTargetWeight','fTargetHeight'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fGender').value='';
+  tempTags = {like:[],dislike:[],health:[],goal:[]};
+  ['like','dislike','health','goal'].forEach(t=>{
+    document.getElementById('f'+cap(t)+'Tags').innerHTML='';
+    document.getElementById('f'+cap(t)+'Input').value='';
+  });
+  document.getElementById('formTitle').textContent='➕ Thêm thành viên';
+  goStep(2);
+}
+
+function cancelAddMember(){goStep(1)}
+
+function saveMember(){
+  const name = document.getElementById('fName').value.trim();
+  const age = parseInt(document.getElementById('fAge').value);
+  const gender = document.getElementById('fGender').value;
+  if(!name||!age){alert('Vui lòng nhập ít nhất Tên và Tuổi!');return;}
+  const m = {
+    name, age, gender,
+    role: document.getElementById('fRole').value,
+    weight: parseFloat(document.getElementById('fWeight').value)||0,
+    height: parseFloat(document.getElementById('fHeight').value)||0,
+    targetWeight: parseFloat(document.getElementById('fTargetWeight').value)||0,
+    targetHeight: parseFloat(document.getElementById('fTargetHeight').value)||0,
+    health: [...tempTags.health],
+    likes: [...tempTags.like],
+    dislikes: [...tempTags.dislike],
+    goals: [...tempTags.goal],
+  };
+  members.push(m);
+  saveToStorage();
+  renderMemberList();
+  document.getElementById('startBtn').disabled = false;
+  goStep(1);
+}
+
+function deleteMember(idx){
+  members.splice(idx,1);
+  saveToStorage();
+  renderMemberList();
+  if(members.length===0) document.getElementById('startBtn').disabled=true;
+}
+
+function renderMemberList(){
+  const list = document.getElementById('memberList');
+  const icons = {Bố:'👨',Mẹ:'👩',Ông:'👴',Bà:'👵',Con:'🧒','Anh/Chị':'🧑',Em:'👦',Khác:'👤'};
+  list.innerHTML = members.map((m,i)=>`
+    <div class="member-row">
+      <div class="member-row-info">
+        <div class="member-avatar">${icons[m.role]||'👤'}</div>
+        <div>
+          <div class="member-row-name">${m.name}</div>
+          <div class="member-row-meta">${m.role} · ${m.age} tuổi${m.height?' · '+m.height+'cm':''}${m.weight?' · '+m.weight+'kg':''}</div>
+        </div>
+      </div>
+      <button class="del-btn" onclick="deleteMember(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function finishSetup(){
+  saveToStorage();
+  document.getElementById('onboarding').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  initApp();
+}
+
+// ═══════════════════ INIT APP ═══════════════════
+function initApp(){
+  // Header
+  const names = members.map(m=>m.name.split(' ').pop()).join(', ');
+  document.getElementById('headerSub').textContent = members.length+' thành viên';
+  document.getElementById('heroGreet').textContent = 'Xin chào gia đình '+members[0].name.split(' ').pop()+'! 👋';
+  document.getElementById('heroDesc').textContent = 'AI đang theo dõi sức khỏe & phát triển cho '+members.length+' thành viên của bạn.';
+  document.getElementById('statMembers').textContent = members.length;
+  renderMembersGrid();
+  renderHomeTips();
+  renderMenu();
+  renderSleepGrid();
+  renderTrackingGoals();
+}
+
+// ═══════════════════ MEMBERS GRID ═══════════════════
+const roleIcons = {Bố:'👨',Mẹ:'👩',Ông:'👴',Bà:'👵',Con:'🧒','Anh/Chị':'🧑',Em:'👦',Khác:'👤'};
+
+function renderMembersGrid(){
+  const grid = document.getElementById('membersGrid');
+  grid.innerHTML = members.map((m,i)=>`
+    <div class="member-card">
+      <div class="mc-header">
+        <div class="mc-avatar">${roleIcons[m.role]||'👤'}</div>
+        <div>
+          <div class="mc-name">${m.name}<span class="mc-badge">${m.role}</span></div>
+          <div class="mc-meta">${m.age} tuổi · ${m.gender==='male'?'Nam':'Nữ'}${m.height?' · '+m.height+'cm':''}${m.weight?' · '+m.weight+'kg':''}</div>
+          <div>
+            <span class="tdee-chip">⚡ TDEE: ~${calcTDEE(m)} kcal/ngày</span>
+            ${(()=>{const b=calcBMI(m);return b?`<span class="bmi-chip" style="background:${b.color}22;color:${b.color}">⚖️ BMI ${b.value} — ${b.cls}</span>`:'';})()}
+          </div>
+        </div>
+      </div>
+      ${m.goals.length?`<div class="mc-section"><div class="mc-label">🎯 Mục tiêu</div><div class="mc-goal-box">${m.goals.join(' · ')}</div></div>`:''}
+      ${(m.targetWeight||m.targetHeight)?`<div class="mc-section"><div class="mc-label">📌 Chỉ số mục tiêu</div><div class="mc-goal-box">${m.targetWeight?'⚖️ '+m.targetWeight+'kg':''} ${m.targetHeight?'📏 '+m.targetHeight+'cm':''}</div></div>`:''}
+      ${m.health.length?`<div class="mc-section"><div class="mc-label">🏥 Sức khỏe</div><div class="mc-health-box">${m.health.join(' · ')}</div></div>`:''}
+      ${m.likes.length?`<div class="mc-section"><div class="mc-label">😋 Món yêu thích</div><div class="mc-tags">${m.likes.map(l=>'<span class="tag like">'+l+'</span>').join('')}</div></div>`:''}
+      ${m.dislikes.length?`<div class="mc-section"><div class="mc-label">🙅 Không thích</div><div class="mc-tags">${m.dislikes.map(d=>'<span class="tag dislike">'+d+'</span>').join('')}</div></div>`:''}
+      <button class="edit-member-btn" onclick="deleteMemberApp(${i})">🗑 Xoá thành viên</button>
+    </div>`).join('');
+}
+
+function deleteMemberApp(i){
+  if(confirm('Xoá '+members[i].name+' khỏi gia đình?')){
+    members.splice(i,1);
+    saveToStorage();
+    renderMembersGrid();
+    document.getElementById('statMembers').textContent = members.length;
+  }
+}
+
+// ═══════════════════ HOME TIPS ═══════════════════
+function renderHomeTips(){
+  const tips = [];
+  // Check for kids
+  const kids = members.filter(m=>m.age<18);
+  const adults = members.filter(m=>m.age>=18);
+  if(kids.length){
+    tips.push({icon:'🌅',color:'#10b981',title:'Bữa sáng quan trọng nhất',desc:`Gia đình có ${kids.length} trẻ em/thiếu niên — không bỏ bữa sáng! Gợi ý hôm nay: Bánh mì trứng + sữa.`});
+    tips.push({icon:'💪',color:'#0284c7',title:'Nhắc vận động hôm nay',desc:`Trẻ dưới 18 tuổi cần <strong>60 phút vận động/ngày</strong>. Thử nhảy dây 15 phút để kích thích sụn tăng trưởng.`});
+    tips.push({icon:'🌙',color:'#7c3aed',title:'Giờ ngủ tối ưu',desc:`Thiếu niên cần ngủ <strong>8–10 giờ/đêm</strong>. Tắt màn hình trước 21:30 để hormone tăng trưởng hoạt động tốt nhất.`});
+  }
+  if(adults.length){
+    tips.push({icon:'💧',color:'#f59e0b',title:'Uống đủ nước',desc:`Người lớn cần <strong>1.5–2 lít nước/ngày</strong>. Uống 1 ly nước trước mỗi bữa ăn giúp kiểm soát cân nặng.`});
+  }
+  // Check health conditions
+  members.forEach(m=>{
+    if(m.health.some(h=>h.toLowerCase().includes('tiểu đường')||h.toLowerCase().includes('đái tháo')))
+      tips.push({icon:'🍚',color:'#ef4444',title:`Lưu ý ${m.name} — Tiểu đường`,desc:`Ưu tiên cơm gạo lứt, hạn chế đường và tinh bột nhanh. Chia nhỏ 5–6 bữa/ngày thay vì 3 bữa lớn.`});
+    if(m.health.some(h=>h.toLowerCase().includes('dị ứng')))
+      tips.push({icon:'⚠️',color:'#f97316',title:`Lưu ý ${m.name} — Dị ứng`,desc:`Kiểm tra kỹ nguyên liệu trước khi nấu: ${m.health.filter(h=>h.toLowerCase().includes('dị ứng')).join(', ')}.`});
+  });
+  if(!tips.length) tips.push({icon:'✅',color:'#10b981',title:'Gia đình khoẻ mạnh',desc:'Tiếp tục duy trì lối sống lành mạnh, ăn đủ bữa và vận động đều đặn mỗi ngày!'});
+  document.getElementById('homeTips').innerHTML = tips.map(t=>`
+    <div class="tip-card" style="border-left-color:${t.color};margin-bottom:10px">
+      <div style="font-size:20px;margin-bottom:5px">${t.icon}</div>
+      <div class="tip-title">${t.title}</div>
+      <div class="tip-desc">${t.desc}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════ SLEEP GRID ═══════════════════
+function renderSleepGrid(){
+  document.getElementById('sleepGrid').innerHTML = SLEEP_DATA.map(s=>{
+    // highlight relevant members
+    const matched = members.filter(m=>{
+      if(s.group.includes('0–3')&&m.age<1) return true;
+      if(s.group.includes('6–13')&&m.age>=6&&m.age<=13) return true;
+      if(s.group.includes('14–17')&&m.age>=14&&m.age<=17) return true;
+      if(s.group.includes('24–65')&&m.age>=18) return true;
+      return false;
+    });
+    const highlight = matched.length?' style="border:2px solid #10b981"':'';
+    const note = matched.length?` <span style="font-size:11px;color:#10b981;font-weight:600">← ${matched.map(m=>m.name.split(' ').pop()).join(', ')}</span>`:'';
+    return `<div class="sleep-card"${highlight}><div class="sleep-hours">${s.hours}</div><div><div class="sleep-group">${s.group}${note}</div><div class="sleep-label">giờ/ngày</div></div></div>`;
+  }).join('');
+}
+
+// ═══════════════════ TRACKING GOALS ═══════════════════
+function renderTrackingGoals(){
+  const goals = members.flatMap(m=>m.goals.map(g=>({name:m.name,goal:g})));
+  if(!goals.length){document.getElementById('trackingGoals').innerHTML='<p style="color:#94a3b8;font-size:13px">Chưa có mục tiêu. Thêm mục tiêu trong hồ sơ thành viên.</p>';return;}
+  document.getElementById('trackingGoals').innerHTML = goals.slice(0,5).map(g=>`
+    <div class="progress-item">
+      <div class="progress-header"><span>🎯 ${g.name}: ${g.goal}</span><span style="color:#10b981">Đang theo dõi</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${30+Math.random()*50|0}%"></div></div>
+    </div>`).join('');
+}
+
+// ═══════════════════ MENU ═══════════════════
+// Kiểm tra món có vi phạm bệnh lý thành viên nào không
+function getConflicts(name) {
+  const conflicts = [];
+  const food = FOOD_LOOKUP[name] || null;
+  members.forEach(m => {
+    if (!m.health || !m.health.length) return;
+    m.health.forEach(cond => {
+      const cl = cond.toLowerCase();
+      Object.entries(HEALTH_RULES).forEach(([key, rule]) => {
+        if (!cl.includes(key)) return;
+        const hit =
+          rule.avoidFoods.includes(name) ||
+          (food && food.tags.some(t => rule.avoidTags.includes(t))) ||
+          (food && food.avoid.some(a => cl.includes(a.toLowerCase())));
+        if (hit) {
+          const already = conflicts.find(c => c.member === m.name);
+          if (!already) conflicts.push({ member: m.name, cond, note: rule.note });
+        }
+      });
+    });
+  });
+  return conflicts;
+}
+
+function mealItemHTML(name){
+  const isFav = favorites.has(name);
+  const conflicts = getConflicts(name);
+  const conflictHTML = conflicts.length
+    ? `<span class="conflict-badge">⚠️ ${conflicts.length}
+        <span class="conflict-tooltip">
+          <strong>⚠️ Lưu ý sức khoẻ:</strong><br>
+          ${conflicts.map(c=>`• ${c.member} (${c.cond}): ${c.note}`).join('<br>')}
+        </span>
+      </span>`
+    : '';
+  return `<div class="meal-item${isFav?' fav':''}" id="mi-${CSS.escape(name)}" style="flex-wrap:wrap;gap:4px">
+    <span style="flex:1;min-width:0">${name}</span>
+    ${conflictHTML}
+    <button class="fav-btn${isFav?' on':''}" onclick="toggleFav('${name.replace(/'/g,"\\'")}',this)" title="${isFav?'Bỏ yêu thích':'Thêm vào yêu thích'}">${isFav?'❤️':'🤍'}</button>
+  </div>`;
+}
+
+function renderHealthTips(){
+  const tips = getFamilyTips();
+  const el = document.getElementById('healthTips');
+  if(!el) return;
+  if(!tips.length){ el.innerHTML=''; return; }
+  el.innerHTML = `<div style="margin-bottom:12px">
+    ${tips.map(t=>`<div style="background:#fffbeb;border-left:3px solid #f59e0b;border-radius:10px;padding:9px 13px;font-size:12.5px;color:#78350f;margin-bottom:7px;line-height:1.6">${t.tip}</div>`).join('')}
+  </div>`;
+}
+
+function renderMenu(){
+  const dayData = MENUS[currentMode];
+  if(!dayData || !dayData.length) return;
+  renderHealthTips();
+  document.getElementById('menuDays').innerHTML = dayData.map((d,i)=>{
+    // Nutrition summary (chỉ hiển thị khi có dữ liệu kcal)
+    let nutHTML = '';
+    if(d.kcal){
+      const tdeeRef = d.tdeeRef || 2000;
+      const diff = d.kcal - tdeeRef;
+      const diffTxt = diff > 0 ? `+${diff}` : diff;
+      const diffColor = Math.abs(diff) < 150 ? '#166534' : (diff > 0 ? '#9a3412' : '#0369a1');
+      nutHTML = `<div class="day-nutrition">
+        <span class="nut-badge nut-kcal">🔥 ${d.kcal} kcal</span>
+        <span class="nut-badge nut-prot">💪 ${d.prot}g đạm</span>
+        <span class="nut-badge" style="background:#f1f5f9;color:${diffColor}">${diffTxt > 0 ? '▲' : '▼'} ${diffTxt} so TDEE</span>
+      </div>`;
+    }
+    return `<div class="day-card">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <h3>${d.day}</h3>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="day-badge">${d.mode}</span>
+          ${d.kcal?`<span class="nut-badge nut-kcal" style="font-size:11px">${d.kcal}kcal</span>`:''}
+          <span id="arr${i}" style="color:#94a3b8">▼</span>
+        </div>
+      </div>
+      <div class="day-body ${i===0?'open':''}" id="day${i}">
+        <div class="meal-title bf">🌅 Bữa sáng</div>
+        <div class="meal-items">${mealItemHTML(d.bf)}</div>
+        <div class="meal-title lunch">🍱 Bữa trưa (2 đạm + 1 canh + 1 rau + 1 quả)</div>
+        <div class="meal-items">${d.lunch.map(x=>mealItemHTML(x)).join('')}</div>
+        <div class="meal-title dinner">🌙 Bữa tối</div>
+        <div class="meal-items">${d.dinner.map(x=>mealItemHTML(x)).join('')}</div>
+        ${nutHTML}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFav(name, btn){
+  if(favorites.has(name)){
+    favorites.delete(name);
+    btn.textContent = '🤍';
+    btn.classList.remove('on');
+    btn.closest('.meal-item').classList.remove('fav');
+    btn.title = 'Thêm vào yêu thích';
+  } else {
+    favorites.add(name);
+    btn.textContent = '❤️';
+    btn.classList.add('on');
+    btn.closest('.meal-item').classList.add('fav');
+    btn.title = 'Bỏ yêu thích';
+  }
+  saveToStorage();
+  renderFavPanel();
+}
+
+function renderFavPanel(){
+  const panel = document.getElementById('favPanel');
+  const count = document.getElementById('favCount');
+  const tagList = document.getElementById('favTagList');
+  count.textContent = favorites.size;
+  if(favorites.size === 0){
+    panel.classList.remove('show');
+    return;
+  }
+  panel.classList.add('show');
+  tagList.innerHTML = [...favorites].map(f=>`
+    <span class="fav-tag">
+      ❤️ ${f}
+      <span style="cursor:pointer;opacity:.6;font-size:13px" onclick="removeFav('${f.replace(/'/g,"\\'")}')">×</span>
+    </span>`).join('');
+}
+
+function removeFav(name){
+  favorites.delete(name);
+  saveToStorage();
+  renderFavPanel();
+  renderMenu(); // cập nhật lại trạng thái tim trong menu
+}
+
+function toggleDay(i){
+  const b=document.getElementById('day'+i);
+  const a=document.getElementById('arr'+i);
+  b.classList.toggle('open');
+  a.textContent=b.classList.contains('open')?'▲':'▼';
+}
+
+// ═══════════════════ TẠO THỰC ĐƠN TUẦN SAU ═══════════════════
+function generateNextWeek(){
+  if(favorites.size === 0){
+    alert('Hãy tick ❤️ ít nhất 1 món yêu thích trước nhé!');
+    return;
+  }
+  const favList = [...favorites];
+  const base = MENUS[currentMode];
+  const days = ['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'];
+
+  // Tạo thực đơn mới: giữ cấu trúc gốc, thay thế ~40% món bằng món yêu thích
+  const nextWeek = base.map((d, di)=>{
+    function injectFavs(arr){
+      return arr.map((meal, idx)=>{
+        // Mỗi bữa có xác suất 40% được thay bằng món yêu thích (trừ canh/rau/quả)
+        const isMain = idx <= 1; // 2 món mặn đầu
+        if(isMain && favList.length && Math.random() < 0.55){
+          const pick = favList[Math.floor(Math.random()*favList.length)];
+          return pick;
+        }
+        return meal;
+      });
+    }
+    return {
+      day: d.day,
+      mode: d.mode,
+      bf: (favList.length && Math.random()<0.3) ? favList[Math.floor(Math.random()*favList.length)] : d.bf,
+      lunch: injectFavs([...d.lunch]),
+      dinner: injectFavs([...d.dinner]),
+    };
+  });
+
+  // Hiển thị thực đơn tuần sau trong custom mode
+  MENUS['next'] = nextWeek;
+  AI_TIPS['next'] = `💬 <strong>AI:</strong> Thực đơn tuần sau đã được tạo với <strong>${favList.length} món yêu thích</strong> của gia đình bạn ưu tiên xuất hiện nhiều hơn! ❤️`;
+
+  // Chuyển sang mode mới
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  currentMode = 'next';
+  document.getElementById('aiMenuTip').innerHTML = AI_TIPS['next'];
+  renderMenu();
+
+  // Thêm nút mode "Tuần sau" nếu chưa có
+  if(!document.getElementById('nextWeekModeBtn')){
+    const grid = document.querySelector('.mode-grid');
+    const btn = document.createElement('div');
+    btn.id = 'nextWeekModeBtn';
+    btn.className = 'mode-btn active';
+    btn.style.cssText = 'border-color:#be123c;background:#fff0f5;color:#be123c;grid-column:span 2';
+    btn.innerHTML = '<span class="mode-icon">❤️</span>Tuần sau (Yêu thích)';
+    btn.onclick = function(){ setMode('next', this); };
+    grid.appendChild(btn);
+  } else {
+    document.getElementById('nextWeekModeBtn').classList.add('active');
+  }
+
+  // Scroll lên menu
+  document.getElementById('menuDays').scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Thông báo nhỏ
+  const tip = document.getElementById('aiMenuTip');
+  tip.style.background = '#fff0f5';
+  tip.style.borderLeftColor = '#be123c';
+  tip.style.color = '#9f1239';
+}
+
+function setMode(mode,btn){
+  currentMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const regenBtn  = document.getElementById('regenBtn');
+  const smartNote = document.getElementById('smartNote');
+  if(mode==='smart'){
+    document.getElementById('aiMenuTip').innerHTML = AI_TIPS['smart'];
+    regenBtn.style.display = 'flex';
+    // Tạo menu ngay lần đầu
+    if(!MENUS['smart']){ regenSmartMenu(); return; }
+    else renderMenu();
+  } else {
+    document.getElementById('aiMenuTip').innerHTML = AI_TIPS[mode]||'';
+    regenBtn.style.display = 'none';
+    smartNote.classList.remove('show');
+    renderMenu();
+  }
+}
+
+// ═══════════════════ MOTOR SUBTABS ═══════════════════
+function showMotor(t,btn){
+  document.querySelectorAll('.motor-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('motor-'+t).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════ BMR CALCULATOR ═══════════════════
+function calcBMR(){
+  const g=document.getElementById('bmrGender').value;
+  const age=parseFloat(document.getElementById('bmrAge').value);
+  const w=parseFloat(document.getElementById('bmrWeight').value);
+  const h=parseFloat(document.getElementById('bmrHeight').value);
+  const act=parseFloat(document.getElementById('bmrActivity').value);
+  if(!age||!w||!h){alert('Vui lòng điền đủ tuổi, cân nặng và chiều cao!');return;}
+  let bmr=g==='male'?88.362+13.397*w+4.799*h-5.677*age:447.593+9.247*w+3.098*h-4.330*age;
+  const tdee=Math.round(bmr*act);bmr=Math.round(bmr);
+  document.getElementById('resBMR').textContent=bmr+' kcal';
+  document.getElementById('resTDEE').textContent=tdee+' kcal';
+  let adv=`<strong>📊 Phân tích:</strong><br>• Cơ thể cần <strong>${bmr} kcal/ngày</strong> khi nghỉ ngơi hoàn toàn.<br>• Với mức vận động đã chọn, cần tổng <strong>${tdee} kcal/ngày</strong>.<br>`;
+  if(age<18)adv+=`• ⚡ Đây là độ tuổi phát triển — <strong>không nên cắt giảm calo mạnh</strong>. Ưu tiên đủ đạm, canxi và ngủ đủ giờ.<br>• 🥛 Cần: Canxi ~1200mg/ngày, Sắt, Kẽm, Vitamin D cho phát triển xương.`;
+  else adv+=`• 🎯 Để giảm cân nhẹ nhàng: ăn ít hơn TDEE khoảng 300–500 kcal/ngày.<br>• 💪 Để duy trì vóc dáng: ăn đúng ${tdee} kcal, kết hợp vận động đều đặn.`;
+  document.getElementById('resAdvice').innerHTML=adv;
+  document.getElementById('bmrResult').classList.add('show');
+}
+
+// ═══════════════════ AI CHAT ═══════════════════
+const AI_KB = {
+  'thực đơn':'🍽️ Hôm nay gợi ý: Sáng bánh mì trứng + sữa. Trưa: Gà rim gừng + Trứng hấp thịt + Canh rau ngót + Su su luộc + Chuối. Tối: Cá kho tiêu + Đậu phụ sốt cà + Canh bí đỏ + Táo.',
+  'ngủ':'😴 Trẻ 6–13 tuổi cần <strong>9–11 giờ/đêm</strong>. Thiếu niên 14–17 tuổi cần <strong>8–10 giờ/đêm</strong>. Người lớn cần <strong>7–9 giờ/đêm</strong>. Tắt màn hình 1 tiếng trước khi ngủ.',
+  'chiều cao':'💪 8 bài tập tốt nhất cho chiều cao: Treo xà, Bơi lội, Nhảy dây, Chạy nước rút, Cobra stretch, Gập người, Tư thế mèo-bò, Tư thế núi. Mỗi ngày 30–60 phút và ngủ đủ giờ!',
+  'rau muống':'🌿 Rau muống rất giàu sắt, canxi và vitamin C. Rau muống đỏ tốt hơn xanh 3–4 lần. Lưu ý: không dùng nếu có vết thương hở, sỏi thận hoặc bệnh Gout.',
+  'bmr':'🔢 BMR là năng lượng cơ thể cần khi nghỉ hoàn toàn. Dùng máy tính BMR bên trên để tính chính xác cho từng người.',
+  'tiểu đường':'🍚 Người tiểu đường nên: ăn cơm gạo lứt thay gạo trắng, tránh đường và tinh bột nhanh, chia 5–6 bữa nhỏ, ăn nhiều rau xanh và đạm nạc. Hỏi bác sĩ về lượng carbs phù hợp.',
+  'dị ứng':'⚠️ Với người dị ứng thực phẩm: đọc kỹ nhãn nguyên liệu, tránh dùng chung dụng cụ nấu, luôn có thuốc chống dị ứng dự phòng.',
+  'tdee':'⚡ TDEE (Total Daily Energy Expenditure) là tổng năng lượng cơ thể cần mỗi ngày dựa trên BMR × hệ số vận động. Bạn có thể xem TDEE từng thành viên trong tab Gia đình. Chế độ thực đơn Thông Minh sẽ tự cân bằng calo theo TDEE của gia đình bạn!',
+  'thông minh':'🧠 Chế độ Thực đơn Thông Minh dùng công thức Mifflin-St Jeor tính TDEE từng người, sau đó lọc món theo bệnh lý, ưu tiên món yêu thích ❤️ và đảm bảo đủ đạm–carbs–chất béo cho cả nhà. Vào tab Thực đơn → chọn 🧠 Thông minh để thử!',
+  'sỏi thận':'🪨 Người sỏi thận nên tránh rau muống, đậu phụ (nhiều oxalate), uống nhiều nước. Chế độ thực đơn Thông Minh sẽ tự động loại các món này khi bạn khai báo bệnh sỏi thận.',
+  'gout':'🦵 Người gout nên tránh hải sản, sườn heo, thịt bò, rau muống (nhiều purin). Chế độ Thông Minh tự lọc các món này khỏi thực đơn.',
+};
+function sendChat(){
+  const input=document.getElementById('chatInput');
+  const msg=input.value.trim();if(!msg)return;
+  addChatMsg('user',msg);input.value='';
+  setTimeout(()=>{
+    const lower=msg.toLowerCase();
+    let resp=`🤔 Câu hỏi hay! Tôi đang học thêm để trả lời tốt hơn. Hiện tại bạn có thể hỏi về: thực đơn, giờ ngủ, tăng chiều cao, dinh dưỡng rau muống, BMR/TDEE. 😊`;
+    for(const [k,v] of Object.entries(AI_KB)){if(lower.includes(k)){resp=v;break;}}
+    // Personalize
+    if(members.length&&(lower.includes('con')||lower.includes('gia đình'))){
+      const kids=members.filter(m=>m.age<18);
+      if(kids.length&&lower.includes('ngủ')) resp+=`<br><br>👨‍👩‍👧 Cho gia đình bạn: ${kids.map(m=>`${m.name} (${m.age} tuổi) cần ${m.age<14?'9–11':'8–10'} giờ/đêm`).join(', ')}.`;
+    }
+    addChatMsg('ai',resp);
+  },600);
+}
+function sendQuick(t){document.getElementById('chatInput').value=t;sendChat();}
+function addChatMsg(role,text){
+  const area=document.getElementById('chatArea');
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  d.innerHTML=`<div class="msg-avatar">${role==='ai'?'🌿':'👤'}</div><div class="msg-bubble">${text}</div>`;
+  area.appendChild(d);area.scrollTop=area.scrollHeight;
+}
+
+// ═══════════════════ LOCALSTORAGE ═══════════════════
+const LS_MEMBERS  = 'grownest_members';
+const LS_FAVS     = 'grownest_favorites';
+const LS_SMART    = 'grownest_smart';
+const LS_NEXT     = 'grownest_next';
+const LS_MODE     = 'grownest_mode';
+const LS_SHOP     = 'grownest_shop_checks';
+
+function saveToStorage(){
+  try{
+    localStorage.setItem(LS_MEMBERS, JSON.stringify(members));
+    localStorage.setItem(LS_FAVS,    JSON.stringify([...favorites]));
+    if(MENUS['smart']) localStorage.setItem(LS_SMART, JSON.stringify(MENUS['smart']));
+    if(MENUS['next'])  localStorage.setItem(LS_NEXT,  JSON.stringify(MENUS['next']));
+    localStorage.setItem(LS_MODE, currentMode);
+    flashSaveIndicator();
+  }catch(e){ console.warn('localStorage unavailable',e); }
+}
+
+function loadFromStorage(){
+  try{
+    const sm = localStorage.getItem(LS_MEMBERS);
+    const sf = localStorage.getItem(LS_FAVS);
+    const ss = localStorage.getItem(LS_SMART);
+    const sn = localStorage.getItem(LS_NEXT);
+    const smode = localStorage.getItem(LS_MODE);
+    if(sm) members  = JSON.parse(sm);
+    if(sf) favorites= new Set(JSON.parse(sf));
+    if(ss) MENUS['smart'] = JSON.parse(ss);
+    if(sn) MENUS['next']  = JSON.parse(sn);
+    if(smode) currentMode = smode;
+    // Nếu chưa có dữ liệu → load gia đình mặc định
+    if(!members.length) members = DEFAULT_MEMBERS.map(m => Object.assign({}, m, {health:[...m.health], likes:[...m.likes], dislikes:[...m.dislikes], goals:[...m.goals]}));
+    return members.length > 0;
+  }catch(e){
+    members = DEFAULT_MEMBERS.map(m => Object.assign({}, m, {health:[...m.health], likes:[...m.likes], dislikes:[...m.dislikes], goals:[...m.goals]}));
+    return true;
+  }
+}
+
+function resetAllData(){
+  if(!confirm('⚠️ Xoá toàn bộ dữ liệu gia đình?\nHành động này KHÔNG thể hoàn tác!')) return;
+  try{ localStorage.clear(); }catch(e){}
+  location.reload();
+}
+
+let _saveTimer = null;
+function flashSaveIndicator(){
+  const el = document.getElementById('saveIndicator');
+  if(!el) return;
+  el.classList.add('show');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(()=>el.classList.remove('show'), 1800);
+}
+
+// ─── Tự động tải dữ liệu khi mở trang ───
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(loadFromStorage()){
+    document.getElementById('onboarding').style.display = 'none';
+    document.getElementById('mainApp').style.display    = 'block';
+    initApp();
+    // Khôi phục mode + smart note nếu cần
+    if(currentMode === 'smart'){
+      document.getElementById('regenBtn').style.display = 'flex';
+      if(MENUS['smart']) document.getElementById('smartNote').classList.add('show');
+    }
+    // Khôi phục nút Tuần sau nếu có
+    if(MENUS['next'] && !document.getElementById('nextWeekModeBtn')){
+      const grid = document.querySelector('.mode-grid');
+      const btn  = document.createElement('div');
+      btn.id        = 'nextWeekModeBtn';
+      btn.className = 'mode-btn'+(currentMode==='next'?' active':'');
+      btn.style.cssText = 'border-color:#be123c;background:#fff0f5;color:#be123c;grid-column:span 2';
+      btn.innerHTML = '<span class="mode-icon">❤️</span>Tuần sau (Yêu thích)';
+      btn.onclick   = function(){ setMode('next', this); };
+      grid.appendChild(btn);
+    }
+  }
+});
+
+// ═══════════════════ SHOPPING LIST THÔNG MINH ═══════════════════
+// Tra cứu nhanh: tên món → food object
+const FOOD_LOOKUP = {};
+Object.values(FOODS).flat().forEach(f=>{ FOOD_LOOKUP[f.name] = f; });
+
+const TAG_EMOJI = {
+  chicken:'🐔',poultry:'🐔',beef:'🥩',pork:'🥩',ribs:'🥩',
+  fish:'🐟',salmon:'🐟',seafood:'🦐',shrimp:'🦐',
+  tofu:'🧀',egg:'🥚',
+  veg:'🥬',salad:'🥗',mushroom:'🍄',fruit:'🍎',
+  rice:'🍚',oat:'🌾',bread:'🍞',noodle:'🍜',flour:'🌾',
+  dairy:'🥛',peanut:'🥜',bean:'🫘',bone:'🦴',
+};
+const TAG_LABEL = {
+  chicken:'Thịt gà',poultry:'Thịt gia cầm',beef:'Thịt bò',pork:'Thịt heo',ribs:'Sườn heo',
+  fish:'Cá các loại',salmon:'Cá hồi',seafood:'Hải sản',shrimp:'Tôm',
+  tofu:'Đậu phụ',egg:'Trứng',
+  veg:'Rau xanh',salad:'Rau salad',mushroom:'Nấm',fruit:'Trái cây',
+  rice:'Gạo',oat:'Yến mạch',bread:'Bánh mì',noodle:'Mì / bún / phở',flour:'Bột & ngũ cốc',
+  dairy:'Sữa & sữa chua',peanut:'Đậu phộng',bean:'Đậu hạt',bone:'Xương hầm',
+};
+const TAG_CAT = {
+  chicken:'đạm',poultry:'đạm',beef:'đạm',pork:'đạm',ribs:'đạm',
+  fish:'đạm',salmon:'đạm',seafood:'đạm',shrimp:'đạm',tofu:'đạm',egg:'đạm',
+  veg:'rau',salad:'rau',mushroom:'rau',
+  fruit:'trái cây',
+  rice:'tinh bột',oat:'tinh bột',bread:'tinh bột',noodle:'tinh bột',flour:'tinh bột',peanut:'tinh bột',bean:'tinh bột',
+  dairy:'sữa',bone:'khác',
+};
+const CAT_KEYS = {
+  'đạm':       '🥩 Đạm — thịt, cá, trứng, đậu',
+  'rau':        '🥬 Rau củ',
+  'trái cây': '🍎 Trái cây',
+  'tinh bột': '🍚 Tinh bột & ngũ cốc',
+  'sữa':       '🥛 Sữa & dairy',
+  'khác':     '🧄 Gia vị & khác',
+};
+
+function refreshShoppingList(){
+  const menuData = MENUS[currentMode];
+  if(!menuData||!menuData.length){
+    document.getElementById('shopStats').innerHTML = '⚠️ Chưa có thực đơn!';
+    return;
+  }
+  const allDishes = new Set();
+  menuData.forEach(d=>{
+    allDishes.add(d.bf);
+    (d.lunch||[]).forEach(x=>allDishes.add(x));
+    (d.dinner||[]).forEach(x=>allDishes.add(x));
+  });
+  const tagCount = {};
+  allDishes.forEach(name=>{
+    const food = FOOD_LOOKUP[name];
+    if(food){
+      food.tags.forEach(t=>{ tagCount[t]=(tagCount[t]||0)+1; });
+    } else {
+      const n = name.toLowerCase();
+      if(n.includes('gà'))            tagCount['chicken']=(tagCount['chicken']||0)+1;
+      else if(n.includes('bò'))       tagCount['beef']   =(tagCount['beef']||0)+1;
+      else if(n.includes('cá'))       tagCount['fish']   =(tagCount['fish']||0)+1;
+      else if(n.includes('tôm'))      tagCount['shrimp'] =(tagCount['shrimp']||0)+1;
+      else if(n.includes('trứng'))  tagCount['egg']    =(tagCount['egg']||0)+1;
+      else if(n.includes('thịt')||n.includes('sườn')) tagCount['pork']=(tagCount['pork']||0)+1;
+      else if(n.includes('đậu phụ')) tagCount['tofu']=(tagCount['tofu']||0)+1;
+      else if(n.includes('rau')||n.includes('canh')) tagCount['veg']=(tagCount['veg']||0)+1;
+      if(n.includes('mì')||n.includes('bún')||n.includes('phở')||n.includes('miến')) tagCount['noodle']=(tagCount['noodle']||0)+1;
+      if(n.includes('bánh mì'))    tagCount['bread']  =(tagCount['bread']||0)+1;
+      if(n.includes('chuối')||n.includes('cam')||n.includes('táo')||n.includes('xoài')||
+         n.includes('dứa')||n.includes('kiwi')||n.includes('nho')) tagCount['fruit']=(tagCount['fruit']||0)+1;
+    }
+  });
+  tagCount['rice'] = Math.max(tagCount['rice']||0, 7);
+
+  const cats = {};
+  Object.values(CAT_KEYS).forEach(k=>{ cats[k]=[]; });
+  Object.entries(tagCount).forEach(([tag,count])=>{
+    const catLabel = CAT_KEYS[TAG_CAT[tag]||'khác'];
+    if(!cats[catLabel]) cats[catLabel]=[];
+    if(!cats[catLabel].find(x=>x.tag===tag)){
+      cats[catLabel].push({tag, label:(TAG_EMOJI[tag]||'🛒')+' '+(TAG_LABEL[tag]||tag), count});
+    }
+  });
+  cats['🧄 Gia vị & khác'] = [
+    {tag:'garlic',    label:'🧄 Tỏi & hành',                         count:7},
+    {tag:'oil',       label:'🫙 Dầu ăn',                            count:7},
+    {tag:'seasoning', label:'🧂 Gia vị (muối, đường, nước mắm)', count:7},
+    ...(cats['🧄 Gia vị & khác']||[]).filter(x=>!['garlic','oil','seasoning'].includes(x.tag)),
+  ];
+
+  let html='', totalItems=0;
+  Object.entries(cats).forEach(([catName,items])=>{
+    if(!items.length) return;
+    totalItems += items.length;
+    let block='<div class="shop-category"><div class="shop-cat-title">'+catName+'</div><div class="shop-check-list">';
+    items.forEach(function(item){
+      block += '<label class="shop-check-item" id="sci-'+item.tag+'">';
+      block += '<input type="checkbox" onchange="toggleShopItem(this)" data-tag="'+item.tag+'">';
+      block += ' '+item.label+'</label>';
+    });
+    block += '</div></div>';
+    html += block;
+  });
+
+  document.getElementById('shoppingListDynamic').innerHTML = html;
+  restoreShopChecks();
+  const modeNames={mixed:'🍱 Kết hợp',traditional:'🥢 Truyền thống',
+                   modern:'🥗 Healthy',saving:'💰 Tiết kiệm',
+                   smart:'🧠 Thông minh',next:'❤️ Tuần sau'};
+  document.getElementById('shopStats').innerHTML='✅ <strong>'+totalItems+' nhóm nguyên liệu</strong> từ thực đơn '
+    +(modeNames[currentMode]||currentMode)+' — 7 ngày  ·  Tick ✓ khi đã mua';
+}
+
+
+function saveShopChecks(){
+  try{
+    var checks = {};
+    document.querySelectorAll('#shoppingListDynamic .shop-check-item input[type="checkbox"]').forEach(function(cb){
+      if(cb.dataset.tag) checks[cb.dataset.tag] = cb.checked;
+    });
+    localStorage.setItem(LS_SHOP, JSON.stringify(checks));
+  }catch(e){}
+}
+
+function restoreShopChecks(){
+  try{
+    var saved = localStorage.getItem(LS_SHOP);
+    if(!saved) return;
+    var checks = JSON.parse(saved);
+    document.querySelectorAll('#shoppingListDynamic .shop-check-item input[type="checkbox"]').forEach(function(cb){
+      if(cb.dataset.tag && checks[cb.dataset.tag]){
+        cb.checked = true;
+        var labelEl = cb.closest('.shop-check-item');
+        if(labelEl) labelEl.classList.add('checked');
+      }
+    });
+  }catch(e){}
+}
+
+function toggleShopItem(cb){
+  var labelEl = cb.closest('.shop-check-item');
+  if(labelEl) labelEl.classList.toggle('checked', cb.checked);
+  saveShopChecks();
+}
+
+// ======= TAB SWITCHING =======
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ======= ADD MEMBER IN APP =======
+function openAddMemberApp(){document.getElementById('appMemberModal').classList.add('open');}
+function closeAppModal(){document.getElementById('appMemberModal').classList.remove('open');}
+function saveAppMember(){
+  const name=document.getElementById('amName').value.trim();
+  const age=parseInt(document.getElementById('amAge').value);
+  if(!name||!age){alert('Vui lòng nhập ít nhất Tên và Tuổi!');return;}
+  members.push({
+    name,age,
+    gender:document.getElementById('amGender').value,
+    role:document.getElementById('amRole').value,
+    weight:parseFloat(document.getElementById('amWeight').value)||0,
+    height:parseFloat(document.getElementById('amHeight').value)||0,
+    targetWeight:0,targetHeight:0,
+    health:document.getElementById('amHealth').value?[document.getElementById('amHealth').value]:[],
+    likes:[],dislikes:[],
+    goals:document.getElementById('amGoal').value?[document.getElementById('amGoal').value]:[],
+  });
+  saveToStorage();
+  renderMembersGrid();
+  document.getElementById('statMembers').textContent=members.length;
+  closeAppModal();
+  ['amName','amAge','amWeight','amHeight','amHealth','amGoal'].forEach(id=>document.getElementById(id).value='');
+}
+</script>
+</body>
+</html>
